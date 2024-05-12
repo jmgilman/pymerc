@@ -1,6 +1,7 @@
 import httpx
 
 from pymerc.api.map import MapAPI
+from pymerc.api.player import PlayerAPI
 from pymerc.api.towns import TownsAPI
 
 class Client:
@@ -21,6 +22,7 @@ class Client:
         self.session.headers.setdefault("Authorization", f"Bearer {self.token}")
 
         self.map = MapAPI(self)
+        self.player = PlayerAPI(self)
         self.towns = TownsAPI(self)
 
     async def get(self, url: str, **kwargs) -> httpx.Response:
