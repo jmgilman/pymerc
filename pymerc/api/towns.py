@@ -30,14 +30,7 @@ class TownsAPI(BaseAPI):
             TownData: The data for the town
         """
         response = await self.client.get(f"{BASE_URL}/{id}")
-
-        try:
-            town_data = towns.TownData.model_validate(response.json())
-        except Exception as e:
-            logger.error(f"Error getting data for town {id}: {e}")
-            return {}
-
-        return town_data
+        return towns.TownData.model_validate(response.json())
 
     async def marketdata(self, id) -> dict[str, towns.MarketItemData]:
         """Get market data for a town.
@@ -48,17 +41,9 @@ class TownsAPI(BaseAPI):
         Returns:
             MarketData: The market data for the town
         """
-        logger.debug(f"Getting market data for town {id}")
+        adapter = TypeAdapter(dict[str, towns.MarketItemData])
         response = await self.client.get(f"{BASE_URL}/{id}/marketdata")
-
-        try:
-            adapter = TypeAdapter(dict[str, towns.MarketItemData])
-            market_data = adapter.validate_python(response.json())
-        except Exception as e:
-            logger.error(f"Error getting market data for {id}: {e}")
-            return {}
-
-        return market_data
+        return adapter.validate_python(response.json())
 
     async def get_market_item_overview(
         self, town_id, item
@@ -73,11 +58,4 @@ class TownsAPI(BaseAPI):
             MarketItemDataDetails: The market overview for the town
         """
         response = await self.client.get(f"{BASE_URL}/{town_id}/markets/{item}")
-
-        try:
-            market_data = towns.MarketItemDataDetails.model_validate(response.json())
-        except Exception as e:
-            logger.error(f"Error getting market data for item {item} in {id}: {e}")
-            return None
-
-        return market_data
+        return towns.MarketItemDataDetails.model_validate(response.json())
