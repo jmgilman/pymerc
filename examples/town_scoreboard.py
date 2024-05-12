@@ -20,19 +20,30 @@ async def main():
     for town in towns:
         town_data[town.name] = await client.towns.data(town.id)
 
-    # Calculate scores
-    most_populated = max(town_data, key=lambda x: town_data[x].commoners.count)
-    most_gentry = max(town_data, key=lambda x: len(town_data[x].household_ids))
-    most_structures = max(town_data, key=lambda x: len(town_data[x].structures))
-    most_taxes = max(town_data, key=lambda x: town_utils.sum_town_taxes(town_data[x]))
-    most_satisfied = max(town_data, key=lambda x: town_utils.calculate_town_satisfaction(town_data[x]))
+    # Sort towns by each criterion and select top three
+    most_populated = sorted(town_data.items(), key=lambda item: item[1].commoners.count, reverse=True)[:3]
+    most_gentry = sorted(town_data.items(), key=lambda item: len(item[1].household_ids), reverse=True)[:3]
+    most_structures = sorted(town_data.items(), key=lambda item: len(item[1].structures), reverse=True)[:3]
+    most_taxes = sorted(town_data.items(), key=lambda item: town_utils.sum_town_taxes(item[1]), reverse=True)[:3]
+    most_satisfied = sorted(town_data.items(), key=lambda item: town_utils.calculate_town_satisfaction(item[1]), reverse=True)[:3]
 
-    print("Scoreboard:")
-    print(f"Most populated town: {most_populated} ({town_data[most_populated].commoners.count} commoners)")
-    print(f"Most gentry: {most_gentry} ({len(town_data[most_gentry].household_ids)} gentry)")
-    print(f"Most structures: {most_structures} ({len(town_data[most_structures].structures)} structures)")
-    print(f"Most taxes collected: {most_taxes} ({town_utils.sum_town_taxes(town_data[most_taxes])}d)")
-    print(f"Most satisfied: {most_satisfied} ({town_utils.calculate_town_satisfaction(town_data[most_satisfied])}% satisfaction)")
+    # Print results
+    print("Scoreboard:\n")
+    print("Most populated towns:")
+    for name, data in most_populated:
+        print(f"  {name:20} {data.commoners.count} commoners")
+    print("\nMost gentry:")
+    for name, data in most_gentry:
+        print(f"  {name:20} {len(data.household_ids)} gentry")
+    print("\nMost structures:")
+    for name, data in most_structures:
+        print(f"  {name:20} {len(data.structures)} structures")
+    print("\nMost taxes collected:")
+    for name, data in most_taxes:
+        print(f"  {name:20} {town_utils.sum_town_taxes(data)}d")
+    print("\nMost satisfied:")
+    for name, data in most_satisfied:
+        print(f"  {name:20} {town_utils.calculate_town_satisfaction(data)}% satisfaction")
 
 if __name__ == "__main__":
     asyncio.run(main())
