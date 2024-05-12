@@ -1,6 +1,5 @@
 from typing import Optional
 
-from loguru import logger
 from pydantic import TypeAdapter
 
 from pymerc.api.base import BaseAPI
