@@ -2,6 +2,7 @@ import httpx
 
 from pymerc.api.map import MapAPI
 from pymerc.api.player import PlayerAPI
+from pymerc.api.static import StaticAPI
 from pymerc.api.towns import TownsAPI
 
 class Client:
@@ -12,6 +13,9 @@ class Client:
     user: str
 
     map: MapAPI
+    player: PlayerAPI
+    static: StaticAPI
+    towns: TownsAPI
 
     def __init__(self, user: str, token: str):
         self.session = httpx.AsyncClient(http2=True)
@@ -23,6 +27,7 @@ class Client:
 
         self.map = MapAPI(self)
         self.player = PlayerAPI(self)
+        self.static = StaticAPI(self)
         self.towns = TownsAPI(self)
 
     async def get(self, url: str, **kwargs) -> httpx.Response:
