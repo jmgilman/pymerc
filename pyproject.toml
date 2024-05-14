@@ -5,6 +5,8 @@ description = "A Python library for interacting with the Mercatorio browser base
 authors = ["Joshua Gilman <joshuagilman@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+homepage = "https://github.com/jmgilman/pymerc"
+keywords = ["mercatorio", "python", "library", "game"]
 packages = [{ include = "pymerc" }]
 
 [tool.poetry.dependencies]

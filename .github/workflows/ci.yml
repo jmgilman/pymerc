@@ -3,6 +3,9 @@ name: CI
 on:
   push:
 
+permissions:
+  id-token: write
+
 jobs:
   build:
       runs-on: ubuntu-latest
@@ -23,3 +26,8 @@ jobs:
           env:
             API_TOKEN: ${{ secrets.API_TOKEN }}
             API_USER: ${{ secrets.API_USER }}
+        - name: Build the package
+          run: poetry build
+        - name: Publish the package
+          if: github.ref == 'refs/tags/*'
+          uses: pypa/gh-action-pypi-publish@release/v1
