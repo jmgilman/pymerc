@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+
+jobs:
+  build:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+        - name: Set up python
+          id: setup-python
+          uses: actions/setup-python@v5
+          with:
+            python-version: '3.12'
+        - name: Install and configure Poetry
+          uses: snok/install-poetry@v1
+        - name: Run tests
+          run: |
+            poetry install
+            poetry run pytest
+          env:
+            API_TOKEN: ${{ secrets.API_TOKEN }}
+            API_USER: ${{ secrets.API_USER }}

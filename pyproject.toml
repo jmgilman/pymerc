@@ -5,10 +5,11 @@ description = "A Python library for interacting with the Mercatorio browser base
 authors = ["Joshua Gilman <joshuagilman@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+packages = [{ include = "pymerc" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-httpx = {extras = ["http2"], version = "^0.27.0"}
+httpx = { extras = ["http2"], version = "^0.27.0" }
 loguru = "^0.7.2"
 asyncio = "^3.4.3"
 pydantic = "^2.7.1"
