@@ -9,7 +9,7 @@ BASE_URL = "https://play.mercatorio.io/api/map/regions"
 class MapAPI(BaseAPI):
     """A class for interacting with the map API endpoint."""
 
-    async def all(self):
+    async def get_all(self):
         """Get a list of all regions in the game.
 
         Returns:

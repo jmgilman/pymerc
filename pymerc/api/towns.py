@@ -13,13 +13,13 @@ class TownsAPI(BaseAPI):
     async def init_cache(self):
         pass
 
-    async def all(self) -> list[towns.Town]:
+    async def get_all(self) -> list[towns.Town]:
         """Get a list of all towns in the game."""
         adapter = TypeAdapter(list[towns.Town])
         response = await self.client.get(BASE_URL)
         return adapter.validate_python(response.json())
 
-    async def data(self, id) -> towns.TownData:
+    async def get_data(self, id) -> towns.TownData:
         """Get data for a town.
 
         Args:
@@ -31,7 +31,7 @@ class TownsAPI(BaseAPI):
         response = await self.client.get(f"{BASE_URL}/{id}")
         return towns.TownData.model_validate(response.json())
 
-    async def marketdata(self, id) -> towns.TownMarket:
+    async def get_market_data(self, id) -> towns.TownMarket:
         """Get market data for a town.
 
         Args:
@@ -43,7 +43,7 @@ class TownsAPI(BaseAPI):
         response = await self.client.get(f"{BASE_URL}/{id}/marketdata")
         return towns.TownMarket.model_validate(response.json())
 
-    async def get_market_item_overview(
+    async def get_market_item(
         self, town_id, item
     ) -> Optional[towns.TownMarketItemDetails]:
         """Get the market overview for an item in a town.
