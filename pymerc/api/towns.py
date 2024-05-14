@@ -31,7 +31,7 @@ class TownsAPI(BaseAPI):
         response = await self.client.get(f"{BASE_URL}/{id}")
         return towns.TownData.model_validate(response.json())
 
-    async def marketdata(self, id) -> dict[str, towns.TownMarket]:
+    async def marketdata(self, id) -> towns.TownMarket:
         """Get market data for a town.
 
         Args:
