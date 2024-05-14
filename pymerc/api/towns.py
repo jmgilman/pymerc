@@ -31,22 +31,21 @@ class TownsAPI(BaseAPI):
         response = await self.client.get(f"{BASE_URL}/{id}")
         return towns.TownData.model_validate(response.json())
 
-    async def marketdata(self, id) -> dict[str, towns.MarketItemData]:
+    async def marketdata(self, id) -> dict[str, towns.TownMarket]:
         """Get market data for a town.
 
         Args:
             id (int): The ID of the town
 
         Returns:
-            MarketData: The market data for the town
+            TownMarket: The market data for the town
         """
-        adapter = TypeAdapter(dict[str, towns.MarketItemData])
         response = await self.client.get(f"{BASE_URL}/{id}/marketdata")
-        return adapter.validate_python(response.json())
+        return towns.TownMarket.model_validate(response.json())
 
     async def get_market_item_overview(
         self, town_id, item
-    ) -> Optional[towns.MarketItemDataDetails]:
+    ) -> Optional[towns.TownMarketItemDetails]:
         """Get the market overview for an item in a town.
 
         Args:
@@ -54,7 +53,7 @@ class TownsAPI(BaseAPI):
             item (str): The item to get the overview for
 
         Returns:
-            MarketItemDataDetails: The market overview for the town
+            TownMarketItemDetails: The market overview for the town
         """
         response = await self.client.get(f"{BASE_URL}/{town_id}/markets/{item}")
-        return towns.MarketItemDataDetails.model_validate(response.json())
+        return towns.TownMarketItemDetails.model_validate(response.json())

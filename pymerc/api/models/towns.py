@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 
 from pymerc.api.models.common import Location
@@ -103,25 +103,13 @@ class TownCulture(BaseModel):
     special_market_pressure: Optional[dict[int, float]] = {}
 
 
-class ItemOrder(BaseModel):
-    """Represents an order for an item in the market."""
+class TownMarket(BaseModel):
+    """Represents the market in a town."""
+    markets: dict[str, TownMarketItem]
+    ts: int = Field(alias="_ts")
 
-    volume: int
-    price: float
 
-
-class MarketItemDataDetails(BaseModel):
-    """Represents the market data for a single item in a town."""
-
-    id: int
-    product: str
-    asset: str
-    currency: str
-    bids: list[ItemOrder]
-    asks: list[ItemOrder]
-    data: MarketItemData
-
-class MarketItemData(BaseModel):
+class TownMarketItem(BaseModel):
     """Represents the market data for a single item in a town."""
 
     price: Optional[float] = 0.0
@@ -136,4 +124,20 @@ class MarketItemData(BaseModel):
     ask_volume_10: Optional[int] = 0
 
 
+class TownMarketItemDetails(BaseModel):
+    """Represents the market data for a single item in a town."""
 
+    id: int
+    product: str
+    asset: str
+    currency: str
+    bids: list[ItemOrder]
+    asks: list[ItemOrder]
+    data: TownMarketItem
+
+
+class ItemOrder(BaseModel):
+    """Represents an order for an item in the market."""
+
+    volume: int
+    price: float
