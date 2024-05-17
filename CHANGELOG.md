@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2024-05-17
+
+### Added
+
+- Utility function for calculating number of structures in a town
+
+### Changed
+
+- Minor updates to reflect latest API state
+
 
 ## [0.2.0] - 2024-05-14
 
@@ -25,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release
 
-[unreleased]: https://github.com/jmgilman/pymerc/compare/v0.2.0...HEAD
+[unreleased]: https://github.com/jmgilman/pymerc/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/jmgilman/pymerc/releases/tag/v0.3.0
 [0.2.0]: https://github.com/jmgilman/pymerc/releases/tag/v0.2.0
 [0.1.0]: https://github.com/jmgilman/pymerc/releases/tag/v0.1.0
