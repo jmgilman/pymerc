@@ -68,5 +68,5 @@ class StaticAPI(BaseAPI):
         filename = re.search(pattern, response.text).group(1)
 
         response = await self.client.get(BASE_URL + filename)
-        pattern = r"Bt=JSON\.parse\('(.*?)'\)"
+        pattern = r"JSON\.parse\('(.*?)'\)"
         return json.loads(re.search(pattern, response.text).group(1).replace("\\", ""))

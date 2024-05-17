@@ -23,7 +23,6 @@ class TownData(BaseModel):
     region: int
     center_ids: list[int]
     domain: dict[str, TownDomain]
-    structures: dict[str, TownStrucure]
     household_ids: list[str]
     commoners: TownCommoners
     government: TownGovernment
