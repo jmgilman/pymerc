@@ -1,5 +1,6 @@
 import httpx
 
+from pymerc.api.buildings import BuildingsAPI
 from pymerc.api.businesses import BusinessesAPI
 from pymerc.api.map import MapAPI
 from pymerc.api.player import PlayerAPI
@@ -13,6 +14,7 @@ class Client:
     token: str
     user: str
 
+    buildings: BuildingsAPI
     businesses: BusinessesAPI
     map: MapAPI
     player: PlayerAPI
@@ -27,6 +29,7 @@ class Client:
         self.session.headers.setdefault("X-Merc-User", self.user)
         self.session.headers.setdefault("Authorization", f"Bearer {self.token}")
 
+        self.buildings = BuildingsAPI(self)
         self.businesses = BusinessesAPI(self)
         self.map = MapAPI(self)
         self.player = PlayerAPI(self)
