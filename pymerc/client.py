@@ -58,6 +58,45 @@ class Client:
         """
         return await self.session.get(url, **kwargs)
 
+    async def patch(self, url: str, json: any, **kwargs) -> httpx.Response:
+        """Make a PATCH request to the given URL.
+
+        Args:
+            url (str): The URL to make the request to.
+            json (any): The JSON data to send in the request.
+            **kwargs: Additional keyword arguments to pass to httpx.
+
+        Returns:
+            requests.Response: The response from the server.
+        """
+        return await self.session.patch(url, json=json, **kwargs)
+
+    async def post(self, url: str, json: any, **kwargs) -> httpx.Response:
+        """Make a POST request to the given URL.
+
+        Args:
+            url (str): The URL to make the request to.
+            json (any): The JSON data to send in the request.
+            **kwargs: Additional keyword arguments to pass to httpx.
+
+        Returns:
+            requests.Response: The response from the server.
+        """
+        return await self.session.post(url, json=json, **kwargs)
+
+    async def put(self, url: str, json: any, **kwargs) -> httpx.Response:
+        """Make a PUT request to the given URL.
+
+        Args:
+            url (str): The URL to make the request to.
+            json (any): The JSON data to send in the request.
+            **kwargs: Additional keyword arguments to pass to httpx.
+
+        Returns:
+            requests.Response: The response from the server.
+        """
+        return await self.session.put(url, json=json, **kwargs)
+
     async def building(self, id: int) -> Building:
         """Get a building by its ID.
 

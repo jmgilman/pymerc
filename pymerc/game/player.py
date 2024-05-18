@@ -27,7 +27,7 @@ class Player:
         ]
 
         if storehouses:
-            self.storehouse = await self._client.buildings_api.get(storehouses[0])
+            self.storehouse = await self._client.building(storehouses[0])
         else:
             self.storehouse = None
 

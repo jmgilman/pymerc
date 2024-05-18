@@ -20,6 +20,11 @@ class Building:
         self.data = await self._client.buildings_api.get(self.id)
 
     @property
+    def inventory(self) -> Optional[common.Inventory]:
+        """Returns the inventory of the building."""
+        return self.data.storage.inventory
+
+    @property
     def items(self) -> Optional[dict[str, common.InventoryAccountAsset]]:
         """Returns the items in the building's storage."""
         if self.data.storage:
@@ -59,3 +64,15 @@ class Building:
     def upgrades(self) -> Optional[list[common.BuildingUpgradeType]]:
         """Returns the upgrades installed for the building."""
         return self.data.upgrades
+
+    def set_manager(self, item: common.Item, manager: common.InventoryManager) -> bool:
+        """Set the manager for an item in the building.
+
+        Args:
+            item (Item): The item.
+            manager (InventoryManager): The manager.
+
+        Returns:
+            bool: Whether the manager was set.
+        """
+        return self._client.buildings_api.set_manager(self.id, item, manager)
