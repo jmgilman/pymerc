@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import httpx
 
 from pymerc.api.buildings import BuildingsAPI
@@ -6,6 +8,7 @@ from pymerc.api.map import MapAPI
 from pymerc.api.player import PlayerAPI
 from pymerc.api.static import StaticAPI
 from pymerc.api.towns import TownsAPI
+from pymerc.exceptions import TurnInProgressException
 
 class Client:
     """A simple API client for the Mercatorio API."""
@@ -36,6 +39,9 @@ class Client:
         self.static = StaticAPI(self)
         self.towns = TownsAPI(self)
 
+    async def close(self):
+        await self.session.aclose()
+
     async def get(self, url: str, **kwargs) -> httpx.Response:
         """Make a GET request to the given URL.
 
@@ -48,5 +54,18 @@ class Client:
         """
         return await self.session.get(url, **kwargs)
 
-    async def close(self):
-        await self.session.aclose()
+    async def turn(client: Client) -> int:
+        """Get the current turn number.
+
+        Args:
+            client (Client): The Mercatorio API client.
+
+        Returns:
+            int: The current turn number.
+        """
+        response = await client.get("https://play.mercatorio.io/api/clock")
+
+        if "preparing next game-turn, try again in a few seconds" in response.text:
+            raise TurnInProgressException("A turn is in progress")
+
+        return response.json()["turn"]
