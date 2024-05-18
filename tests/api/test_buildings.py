@@ -5,13 +5,10 @@ from pymerc.api.models.common import BuildingType
 
 
 @pytest.mark.asyncio
-async def test_get(client: Client):
-    player = await client.player.get()
-    business = await client.businesses.get(player.household.business_ids[0])
-    storehouse_id = [
-        building.id
-        for building in business.buildings
-        if building.type == BuildingType.Storehouse
-    ][0]
-    storehouse = await client.buildings.get(storehouse_id)
-    assert storehouse is not None
+async def test_get(subtests, client: Client):
+    player = await client.player_api.get()
+    business = await client.businesses_api.get(player.household.business_ids[0])
+    for building in business.buildings:
+        with subtests.test(f"Testing data for building {building.type}", i=building.id):
+            b = await client.buildings_api.get(building.id)
+            assert b is not None

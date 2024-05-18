@@ -15,13 +15,13 @@ class Town:
     """A higher level representation of a town in the game."""
 
     def __init__(self, client: Client, id: int):
-        self.client = client
+        self._client = client
         self.id = id
 
     async def load(self):
         """Loads the data for the town."""
-        self._data = await self.client.towns.get_data(self.id)
-        self._market = await self.client.towns.get_market_data(self.id)
+        self._data = await self._client.towns.get_data(self.id)
+        self._market = await self._client.towns.get_market_data(self.id)
 
     @property
     def data(self) -> models.TownData:
@@ -79,7 +79,7 @@ class Town:
         Returns:
             TownMarketItemDetails: The details for the item
         """
-        return await self.client.towns.get_market_item(self.id, name)
+        return await self._client.towns.get_market_item(self.id, name)
 
     async def fetch_region(self) -> Region:
         """Fetches the region of the town.
@@ -87,7 +87,7 @@ class Town:
         Returns:
             Region: The region of the town.
         """
-        return await self.client.regions.get(self._data.region)
+        return await self._client.regions.get(self._data.region)
 
     def get_item(self, name: str) -> Optional[models.TownMarketItem]:
         """Gets an item from the market.

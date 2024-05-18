@@ -60,7 +60,7 @@ class BuildingUpgrade(BaseModel):
 class Recipe(BaseModel):
     """Represents a recipe for a product in the game."""
 
-    name: str
+    name: common.Recipe
     tier: int
     building: common.BuildingType
     size: int

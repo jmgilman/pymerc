@@ -9,6 +9,8 @@ from pymerc.api.player import PlayerAPI
 from pymerc.api.static import StaticAPI
 from pymerc.api.towns import TownsAPI
 from pymerc.exceptions import TurnInProgressException
+from pymerc.game.building import Building
+from pymerc.game.player import Player
 from pymerc.game.town import Town
 
 
@@ -19,12 +21,12 @@ class Client:
     token: str
     user: str
 
-    buildings: BuildingsAPI
-    businesses: BusinessesAPI
-    map: MapAPI
-    player: PlayerAPI
-    static: StaticAPI
-    towns: TownsAPI
+    buildings_api: BuildingsAPI
+    businesses_api: BusinessesAPI
+    map_api: MapAPI
+    player_api: PlayerAPI
+    static_api: StaticAPI
+    towns_api: TownsAPI
 
     def __init__(self, user: str, token: str):
         self.session = httpx.AsyncClient(http2=True)
@@ -34,12 +36,12 @@ class Client:
         self.session.headers.setdefault("X-Merc-User", self.user)
         self.session.headers.setdefault("Authorization", f"Bearer {self.token}")
 
-        self.buildings = BuildingsAPI(self)
-        self.businesses = BusinessesAPI(self)
-        self.map = MapAPI(self)
-        self.player = PlayerAPI(self)
-        self.static = StaticAPI(self)
-        self.towns = TownsAPI(self)
+        self.buildings_api = BuildingsAPI(self)
+        self.businesses_api = BusinessesAPI(self)
+        self.map_api = MapAPI(self)
+        self.player_api = PlayerAPI(self)
+        self.static_api = StaticAPI(self)
+        self.towns_api = TownsAPI(self)
 
     async def close(self):
         await self.session.aclose()
@@ -55,6 +57,31 @@ class Client:
             requests.Response: The response from the server.
         """
         return await self.session.get(url, **kwargs)
+
+    async def building(self, id: int) -> Building:
+        """Get a building by its ID.
+
+        Args:
+            id (int): The ID of the building.
+
+        Returns:
+            Building: The building with the given ID.
+        """
+        b = Building(self, id)
+        await b.load()
+
+        return b
+
+    async def player(self) -> Player:
+        """Get the current player.
+
+        Returns:
+            Player: The player.
+        """
+        p = Player(self)
+        await p.load()
+
+        return p
 
     async def town(self, town_id: int) -> Town:
         """Get a town by its ID.
