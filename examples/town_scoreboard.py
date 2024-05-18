@@ -10,6 +10,7 @@ from pymerc.util import towns as town_utils
 # Load the API_USER and API_TOKEN from the environment
 load_dotenv()
 
+
 async def main():
     # Create a client object
     client = Client(os.environ["API_USER"], os.environ["API_TOKEN"])
@@ -21,11 +22,25 @@ async def main():
         town_data[town.name] = await client.towns.data(town.id)
 
     # Sort towns by each criterion and select top three
-    most_populated = sorted(town_data.items(), key=lambda item: item[1].commoners.count, reverse=True)[:3]
-    most_gentry = sorted(town_data.items(), key=lambda item: len(item[1].household_ids), reverse=True)[:3]
-    most_structures = sorted(town_data.items(), key=lambda item: len(item[1].structures), reverse=True)[:3]
-    most_taxes = sorted(town_data.items(), key=lambda item: town_utils.sum_town_taxes(item[1]), reverse=True)[:3]
-    most_satisfied = sorted(town_data.items(), key=lambda item: town_utils.calculate_town_satisfaction(item[1]), reverse=True)[:3]
+    most_populated = sorted(
+        town_data.items(), key=lambda item: item[1].commoners.count, reverse=True
+    )[:3]
+    most_gentry = sorted(
+        town_data.items(), key=lambda item: len(item[1].household_ids), reverse=True
+    )[:3]
+    most_structures = sorted(
+        town_data.items(), key=lambda item: len(item[1].structures), reverse=True
+    )[:3]
+    most_taxes = sorted(
+        town_data.items(),
+        key=lambda item: town_utils.sum_town_taxes(item[1]),
+        reverse=True,
+    )[:3]
+    most_satisfied = sorted(
+        town_data.items(),
+        key=lambda item: town_utils.calculate_town_satisfaction(item[1]),
+        reverse=True,
+    )[:3]
 
     # Print results
     print("Scoreboard:\n")
@@ -43,7 +58,10 @@ async def main():
         print(f"  {name:20} {town_utils.sum_town_taxes(data)}d")
     print("\nMost satisfied:")
     for name, data in most_satisfied:
-        print(f"  {name:20} {town_utils.calculate_town_satisfaction(data)}% satisfaction")
+        print(
+            f"  {name:20} {town_utils.calculate_town_satisfaction(data)}% satisfaction"
+        )
+
 
 if __name__ == "__main__":
     asyncio.run(main())

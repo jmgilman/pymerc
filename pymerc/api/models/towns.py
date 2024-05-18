@@ -5,6 +5,7 @@ from typing import Optional
 
 from pymerc.api.models import common
 
+
 class Town(BaseModel):
     """Represents a town in the game."""
 
@@ -17,6 +18,7 @@ class Town(BaseModel):
 
 class TownData(BaseModel):
     """Represents the data for a town in the game."""
+
     id: str
     name: str
     location: common.Location
@@ -33,6 +35,7 @@ class TownData(BaseModel):
 
 class TownDomain(BaseModel):
     """Represents a domain in a town."""
+
     owner_id: Optional[str] = None
     structure: Optional[TownDomainStructure] = None
     ask_price: Optional[str] = None
@@ -40,6 +43,7 @@ class TownDomain(BaseModel):
 
 class TownDomainStructure(BaseModel):
     """Represents a structure in a town domain."""
+
     id: str
     type: common.BuildingType
     tags: Optional[list[str]] = []
@@ -47,6 +51,7 @@ class TownDomainStructure(BaseModel):
 
 class TownCommoners(BaseModel):
     """Represents the commoners in a town."""
+
     account_id: str
     count: int
     migration: float
@@ -55,12 +60,14 @@ class TownCommoners(BaseModel):
 
 class TownDemandCategory(BaseModel):
     """Represents a category of demands in a town."""
+
     name: str
     products: list[TownDemand]
 
 
 class TownDemand(BaseModel):
     """Represents a demand in a town."""
+
     product: common.Item
     bonus: int
     desire: int
@@ -70,6 +77,7 @@ class TownDemand(BaseModel):
 
 class TownGovernment(BaseModel):
     """Represents the government in a town."""
+
     account_id: str
     demands: list[TownDemand]
     taxes_collected: TownGovernmentTaxes
@@ -77,6 +85,7 @@ class TownGovernment(BaseModel):
 
 class TownGovernmentTaxes(BaseModel):
     """Represents the taxes collected by the government in a town."""
+
     land_tax: float
     structure_tax: float
     ferry_fees: float
@@ -84,16 +93,19 @@ class TownGovernmentTaxes(BaseModel):
 
 class TownChurch(BaseModel):
     """Represents the church in a town."""
+
     project_ids: Optional[list[str]] = []
 
 
 class TownCulture(BaseModel):
     """Represents the culture in a town."""
+
     special_market_pressure: Optional[dict[int, float]] = {}
 
 
 class TownMarket(BaseModel):
     """Represents the market in a town."""
+
     markets: dict[str, TownMarketItem]
     ts: int = Field(alias="_ts")
 

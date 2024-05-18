@@ -10,6 +10,7 @@ from pymerc.api.models import common
 if TYPE_CHECKING:
     from pymerc.client import Client
 
+
 class Town:
     """A higher level representation of a town in the game."""
 
@@ -45,7 +46,9 @@ class Town:
     @property
     def total_satisfaction(self) -> int:
         """The percent satisfaction of the town across all categories."""
-        demands = sum([category.products for category in self._data.commoners.sustenance], [])
+        demands = sum(
+            [category.products for category in self._data.commoners.sustenance], []
+        )
         desire_total = sum(demand.desire for demand in demands)
         result_total = sum(demand.result for demand in demands)
 
@@ -54,7 +57,13 @@ class Town:
     @property
     def total_structures(self) -> int:
         """The total number of structures in the town."""
-        return len([domain for domain in self._data.domain.values() if domain.structure is not None])
+        return len(
+            [
+                domain
+                for domain in self._data.domain.values()
+                if domain.structure is not None
+            ]
+        )
 
     @property
     def total_taxes(self) -> int:
@@ -91,7 +100,9 @@ class Town:
         """
         return self._market.markets.get(name)
 
-    def get_structures(self, type: common.BuildingType) -> list[models.TownDomainStructure]:
+    def get_structures(
+        self, type: common.BuildingType
+    ) -> list[models.TownDomainStructure]:
         """Gets structures of a given type in the town.
 
         Args:
@@ -100,4 +111,8 @@ class Town:
         Returns:
             list[TownDomainStructure]: The structures with the given type
         """
-        return [domain.structure for domain in self._data.domain.values() if domain.structure is not None and domain.structure.type == type]
+        return [
+            domain.structure
+            for domain in self._data.domain.values()
+            if domain.structure is not None and domain.structure.type == type
+        ]

@@ -4,8 +4,10 @@ from pydantic import BaseModel
 
 from pymerc.api.models import common
 
+
 class Building(BaseModel):
     """Represents a building."""
+
     capacity: int
     construction: BuildingConstruction
     delivery_cost: BuildingDeliveryCost
@@ -19,8 +21,10 @@ class Building(BaseModel):
     town_id: int
     type: common.BuildingType
 
+
 class BuildingConstruction(BaseModel):
     """Represents a construction on a building."""
+
     inventory: common.Inventory
     progress: int
     reference: str
@@ -28,12 +32,16 @@ class BuildingConstruction(BaseModel):
     time: int
     upgrade_type: str
 
+
 class BuildingDeliveryCost(BaseModel):
     """Represents the delivery cost of a building."""
+
     land_distance: int
+
 
 class BuildingStorage(BaseModel):
     """Represents the storage of a building."""
+
     inventory: common.Inventory
     operations: list[str]
     reference: str

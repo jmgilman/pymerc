@@ -3,6 +3,7 @@ import math
 from pymerc.api.models.towns import TownData
 from pymerc.client import Client
 
+
 def calculate_town_satisfaction(data: TownData):
     """Calculate the satisfaction of a town.
 
@@ -17,6 +18,7 @@ def calculate_town_satisfaction(data: TownData):
     result_total = sum(demand.result for demand in demands)
 
     return math.ceil((result_total / desire_total) * 100)
+
 
 async def get_towns_market_data(client: Client):
     """Get the market data for all towns.
@@ -44,7 +46,10 @@ def sum_town_structures(data: TownData):
     Returns:
         int: The sum of the structures in the town
     """
-    return len([domain for domain in data.domain.values() if domain.structure is not None])
+    return len(
+        [domain for domain in data.domain.values() if domain.structure is not None]
+    )
+
 
 def sum_town_taxes(data: TownData):
     """Sum the taxes collected by a town.

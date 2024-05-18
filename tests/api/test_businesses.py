@@ -2,6 +2,7 @@ import pytest
 
 from pymerc.client import Client
 
+
 @pytest.mark.asyncio
 async def test_get(client: Client):
     player = await client.player.get()

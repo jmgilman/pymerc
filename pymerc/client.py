@@ -11,6 +11,7 @@ from pymerc.api.towns import TownsAPI
 from pymerc.exceptions import TurnInProgressException
 from pymerc.game.town import Town
 
+
 class Client:
     """A simple API client for the Mercatorio API."""
 

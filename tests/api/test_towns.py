@@ -1,9 +1,11 @@
 import pytest
 
+
 @pytest.mark.asyncio
 async def test_all(client):
     towns = await client.towns.get_all()
     assert len(towns) > 0
+
 
 @pytest.mark.asyncio
 async def test_data(subtests, client):
@@ -13,6 +15,7 @@ async def test_data(subtests, client):
             data = await client.towns.get_data(town.id)
             assert data is not None
 
+
 @pytest.mark.asyncio
 async def test_marketdata(subtests, client):
     towns = await client.towns.get_all()
@@ -20,6 +23,7 @@ async def test_marketdata(subtests, client):
         with subtests.test(f"Testing data for town {town.name}", i=town.id):
             data = await client.towns.get_market_data(town.id)
             assert data is not None
+
 
 @pytest.mark.asyncio
 async def test_get_market_item_overview(subtests, client):

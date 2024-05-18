@@ -5,12 +5,14 @@ from pydantic import BaseModel
 
 from pymerc.api.models import common
 
+
 class Player(BaseModel):
     username: str
     household: Household
     discord_id: str
     settings: Settings
     active: bool
+
 
 class Household(BaseModel):
     id: str
@@ -27,9 +29,11 @@ class Household(BaseModel):
     caps: dict[str, int]
     sustenance: Sustenance
 
+
 class PrestigeImpact(BaseModel):
     factor: str
     impact: float
+
 
 class Worker(BaseModel):
     assignment: str
@@ -37,10 +41,12 @@ class Worker(BaseModel):
     name: str
     skills: dict[common.Skill, float]
 
+
 class Sustenance(BaseModel):
     reference: str
     inventory: common.Inventory
     provider_id: str
+
 
 class Settings(BaseModel):
     sound_volume: int
@@ -57,6 +63,7 @@ class Settings(BaseModel):
     welcome_splash: bool
     first_building_splash: bool
     warehouse_splash: bool
+
 
 class NotificationSettings(BaseModel):
     discord: bool

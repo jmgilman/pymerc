@@ -4,16 +4,20 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
+
 class Asset(Enum):
     """Represents an asset."""
+
     Cog = "cog"
     Handcart = "handcart"
     Money = "money"
     Snekkja = "snekkja"
     Tumbrel = "tumbrel"
 
+
 class BuildingType(Enum):
     """Represents the type of a building."""
+
     Apothecary = "apothecary"
     Bakery = "bakery"
     Bloomery = "bloomery"
@@ -88,8 +92,10 @@ class BuildingType(Enum):
     Weavery = "weavery"
     Windmill = "windmill"
 
+
 class BuildingUpgradeType(Enum):
     """Represents the type of a building upgrade."""
+
     Armsrack = "armsrack"
     Beehives = "beehives"
     Bellows = "bellows"
@@ -123,13 +129,17 @@ class BuildingUpgradeType(Enum):
     Warehouse = "warehouse"
     Weaponsrack = "weaponsrack"
 
+
 class Climate(Enum):
     """Represents a climate."""
+
     Cold = "cold"
     Warm = "warm"
 
+
 class Item(Enum):
     """Represents an item."""
+
     Alembics = "alembics"
     Arms = "arms"
     Axes = "axes"
@@ -227,14 +237,18 @@ class Item(Enum):
     WroughtIron = "wrought iron"
     Yarn = "yarn"
 
+
 class ItemType(Enum):
     """Represents an item type."""
+
     Commodity = "commodity"
     Service = "service"
     Special = "special"
 
+
 class Skill(Enum):
     """Represents a worker skill."""
+
     Crafting = "crafting"
     Forging = "forging"
     Maritime = "maritime"
@@ -243,15 +257,19 @@ class Skill(Enum):
     Textile = "textile"
     Weaponry = "weaponry"
 
+
 class SkillLevel(Enum):
     """Represents a worker skill level."""
+
     Novice = 99
     Worker = 599
     Journeyman = 2699
     Master = 9999
 
+
 class Transport(Enum):
     """Represents a transport."""
+
     Cog = "cog"
     Handcart = "handcart"
     Snekkja = "snekkja"
@@ -269,24 +287,30 @@ class Location(BaseModel):
     x: int
     y: int
 
+
 class Inventory(BaseModel):
     """Represents an inventory."""
+
     account: InventoryAccount
     capacity: int
     managers: dict[Item, InventoryManager]
     previous_flows: Optional[dict[Item, InventoryFlow]] = {}
     reserved: Optional[int] = None
 
+
 class InventoryAccount(BaseModel):
     """Represents an inventory account."""
+
     assets: dict[Item, InventoryAccountAsset]
     id: str
     name: Optional[str] = None
     owner_id: int
     sponsor_id: Optional[int] = None
 
+
 class InventoryAccountAsset(BaseModel):
     """Represents an asset in an inventory account."""
+
     balance: float
     capacity: Optional[float] = None
     purchase: Optional[float] = None
@@ -297,8 +321,10 @@ class InventoryAccountAsset(BaseModel):
     sale_price: Optional[float] = None
     unit_cost: Optional[float] = None
 
+
 class InventoryManager(BaseModel):
     """Represents an inventory manager."""
+
     buy_price: Optional[float] = None
     buy_volume: Optional[int] = None
     capacity: Optional[int] = None
@@ -306,12 +332,14 @@ class InventoryManager(BaseModel):
     sell_price: Optional[float] = None
     sell_volume: Optional[int] = None
 
+
 class InventoryFlow(BaseModel):
     """Represents an inventory flow."""
+
     consumption: Optional[float] = None
     expiration: Optional[float] = None
     export: Optional[int] = None
-    imported: Optional[int] = Field(None, alias='import')
+    imported: Optional[int] = Field(None, alias="import")
     production: Optional[float] = None
     production_cost: Optional[float] = None
     purchase: Optional[int] = None
