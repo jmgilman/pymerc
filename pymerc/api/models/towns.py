@@ -61,7 +61,7 @@ class TownDemandCategory(BaseModel):
 
 class TownDemand(BaseModel):
     """Represents a demand in a town."""
-    product: str
+    product: common.Item
     bonus: int
     desire: int
     request: int
@@ -117,8 +117,8 @@ class TownMarketItemDetails(BaseModel):
     """Represents the market data for a single item in a town."""
 
     id: int
-    product: str
-    asset: str
+    product: common.Item
+    asset: common.Item
     currency: str
     bids: list[ItemOrder]
     asks: list[ItemOrder]

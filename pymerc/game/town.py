@@ -33,9 +33,14 @@ class Town:
         return self._market.markets
 
     @property
-    def structures(self) -> int:
-        """The number of structures in the town."""
-        return len([domain for domain in self._data.domain.values() if domain.structure is not None])
+    def structures(self) -> dict[str, models.TownDomainStructure]:
+        """The structures in the town."""
+        structures = {}
+        for domain in self._data.domain.values():
+            if domain.structure is not None:
+                structures[domain.structure.type] = domain.structure
+
+        return structures
 
     @property
     def total_satisfaction(self) -> int:
@@ -47,12 +52,17 @@ class Town:
         return math.ceil((result_total / desire_total) * 100)
 
     @property
+    def total_structures(self) -> int:
+        """The total number of structures in the town."""
+        return len([domain for domain in self._data.domain.values() if domain.structure is not None])
+
+    @property
     def total_taxes(self) -> int:
         """The total taxes collected by the town."""
         return sum(self._data.government.taxes_collected.__dict__.values())
 
-    async def get_market_item(self, name: str) -> models.TownMarketItemDetails:
-        """Gets the details for a market item.
+    async def fetch_market_item(self, name: str) -> models.TownMarketItemDetails:
+        """Fetches the details for a market item.
 
         Args:
             name (str): The name of the item
@@ -62,29 +72,27 @@ class Town:
         """
         return await self.client.towns.get_market_item(self.id, name)
 
-    async def get_region(self) -> Region:
-        """Gets the region of the town.
+    async def fetch_region(self) -> Region:
+        """Fetches the region of the town.
 
         Returns:
             Region: The region of the town.
         """
         return await self.client.regions.get(self._data.region)
 
-    def get_structures(self) -> dict[str, models.TownDomainStructure]:
-        """Gets the structures in the town.
+    def get_item(self, name: str) -> Optional[models.TownMarketItem]:
+        """Gets an item from the market.
+
+        Args:
+            name (str): The name of the item
 
         Returns:
-            dict[str, TownDomainStructure]: The structures in the town.
+            Optional[TownMarketItem]: The item, if found
         """
-        structures = {}
-        for domain in self._data.domain.values():
-            if domain.structure is not None:
-                structures[domain.structure.type] = domain.structure
+        return self._market.markets.get(name)
 
-        return structures
-
-    def find_structure(self, type: common.BuildingType) -> list[models.TownDomainStructure]:
-        """Finds a structure in the town.
+    def get_structures(self, type: common.BuildingType) -> list[models.TownDomainStructure]:
+        """Gets structures of a given type in the town.
 
         Args:
             type (BuildingType): The type of structure to find
