@@ -3,6 +3,8 @@ from typing import Optional
 
 from pydantic import BaseModel
 
+from pymerc.api.models import common
+
 class Player(BaseModel):
     username: str
     household: Household
@@ -33,41 +35,12 @@ class Worker(BaseModel):
     assignment: str
     capacity: int
     name: str
-    skills: dict[str, float]
+    skills: dict[common.Skill, float]
 
 class Sustenance(BaseModel):
     reference: str
-    inventory: Inventory
+    inventory: common.Inventory
     provider_id: str
-
-class Inventory(BaseModel):
-    account: AccountInventory
-    capacity: int
-    managers: dict[str, Manager]
-    projected_flows: dict[str, Projection]
-    previous_flows: dict[str, Projection]
-
-class AccountInventory(BaseModel):
-    id: str
-    name: str
-    owner_id: str
-    master_id: str
-    assets: dict[str, Asset]
-
-class Asset(BaseModel):
-    balance: float
-    reserved: Optional[float] = -1.0
-    capacity: Optional[int] = -1
-    unit_cost: Optional[float] = -1.0
-
-class Manager(BaseModel):
-    buy_volume: int
-    sell_volume: int
-    capacity: int
-
-class Projection(BaseModel):
-    consumption: Optional[float] = -1.0
-    shortfall: Optional[float] = -1.0
 
 class Settings(BaseModel):
     sound_volume: int

@@ -17,7 +17,7 @@ class Building(BaseModel):
     storage: BuildingStorage
     sublocation: common.Location
     town_id: int
-    type: str
+    type: common.BuildingType
 
 class BuildingConstruction(BaseModel):
     """Represents a construction on a building."""

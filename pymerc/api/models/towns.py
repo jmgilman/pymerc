@@ -3,14 +3,14 @@ from __future__ import annotations
 from pydantic import BaseModel, Field
 from typing import Optional
 
-from pymerc.api.models.common import Location
+from pymerc.api.models import common
 
 class Town(BaseModel):
     """Represents a town in the game."""
 
     id: str
     name: str
-    location: Location
+    location: common.Location
     region: int
     capital: bool
 
@@ -19,7 +19,7 @@ class TownData(BaseModel):
     """Represents the data for a town in the game."""
     id: str
     name: str
-    location: Location
+    location: common.Location
     region: int
     center_ids: list[int]
     domain: dict[str, TownDomain]
@@ -41,18 +41,8 @@ class TownDomain(BaseModel):
 class TownDomainStructure(BaseModel):
     """Represents a structure in a town domain."""
     id: str
-    type: str
+    type: common.BuildingType
     tags: Optional[list[str]] = []
-
-
-class TownStrucure(BaseModel):
-    """Represents a structure in a town."""
-    id: int
-    type: str
-    size: Optional[int] = 0
-    owner_id: str
-    location: Location
-    land: Optional[list[Location]] = []
 
 
 class TownCommoners(BaseModel):

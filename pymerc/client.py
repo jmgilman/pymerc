@@ -9,6 +9,7 @@ from pymerc.api.player import PlayerAPI
 from pymerc.api.static import StaticAPI
 from pymerc.api.towns import TownsAPI
 from pymerc.exceptions import TurnInProgressException
+from pymerc.game.town import Town
 
 class Client:
     """A simple API client for the Mercatorio API."""
@@ -53,6 +54,20 @@ class Client:
             requests.Response: The response from the server.
         """
         return await self.session.get(url, **kwargs)
+
+    async def town(self, town_id: int) -> Town:
+        """Get a town by its ID.
+
+        Args:
+            town_id (int): The ID of the town.
+
+        Returns:
+            Town: The town with the given ID.
+        """
+        t = Town(self, town_id)
+        await t.load()
+
+        return t
 
     async def turn(client: Client) -> int:
         """Get the current turn number.

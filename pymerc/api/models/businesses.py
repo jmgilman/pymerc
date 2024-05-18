@@ -3,6 +3,8 @@ from typing import Optional
 
 from pydantic import BaseModel
 
+from pymerc.api.models import common
+
 class Business(BaseModel):
     """A business in the game."""
     account: BusinessAccount
@@ -20,15 +22,15 @@ class BusinessAccount(BaseModel):
     id: int
     name: str
     owner_id: int
-    assets: dict[str, BusinessAccountAsset]
+    assets: dict[common.Asset, BusinessAccountAsset]
 
 class BusinessAccountAsset(BaseModel):
     """An asset in a business account."""
     balance: float
-    reserved: int
+    reserved: float
     unit_cost: Optional[float] = None
 
 class Building(BaseModel):
     """A building belonging to a business."""
     id: int
-    type: str
+    type: common.BuildingType
