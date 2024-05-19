@@ -7,6 +7,7 @@ from pymerc.api.models import towns
 
 BASE_URL = "https://play.mercatorio.io/api/towns"
 
+
 class TownsAPI(BaseAPI):
     """A class for interacting with the towns API endpoint."""
 

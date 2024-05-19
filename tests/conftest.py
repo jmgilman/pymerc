@@ -7,6 +7,7 @@ from pymerc.client import Client
 
 load_dotenv()
 
+
 @pytest.fixture()
 def client():
     api_token = os.environ.get("API_TOKEN")

@@ -7,8 +7,9 @@ from pydantic import TypeAdapter
 from pymerc.api.base import BaseAPI
 from pymerc.api.models import static
 
-BASE_URL="https://play.mercatorio.io/static/js/"
-ROOT_URL="https://play.mercatorio.io/"
+BASE_URL = "https://play.mercatorio.io/static/js/"
+ROOT_URL = "https://play.mercatorio.io/"
+
 
 class StaticAPI(BaseAPI):
     """A class for interacting with the static data from the game."""

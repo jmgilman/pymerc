@@ -28,4 +28,3 @@ class Region(BaseModel):
     name: str
     center: Center
     size: int
-
