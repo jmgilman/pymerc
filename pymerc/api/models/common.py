@@ -602,7 +602,7 @@ class InventoryAccount(BaseModel):
     id: str
     name: Optional[str] = None
     owner_id: int
-    sponsor_id: Optional[int] = None
+    sponsor_id: Optional[str] = None
 
 
 class InventoryAccountAsset(BaseModel):
