@@ -20,8 +20,8 @@ class Town:
 
     async def load(self):
         """Loads the data for the town."""
-        self._data = await self._client.towns.get_data(self.id)
-        self._market = await self._client.towns.get_market_data(self.id)
+        self._data = await self._client.towns_api.get_data(self.id)
+        self._market = await self._client.towns_api.get_market_data(self.id)
 
     @property
     def data(self) -> models.TownData:
