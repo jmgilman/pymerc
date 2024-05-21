@@ -1,4 +1,5 @@
 from __future__ import annotations
+import asyncio
 
 import httpx
 
@@ -135,6 +136,22 @@ class Client:
         await t.load()
 
         return t
+
+    async def towns(self, filter: list[str] = []) -> list[Town]:
+        """Get all towns.
+
+        Args:
+            filter (list[str], optional): Filter towns by name. Defaults to [].
+
+        Returns:
+            list[Town]: All towns.
+        """
+        tasks = []
+        for town in await self.towns_api.get_all():
+            if filter and town.name not in filter:
+                continue
+            tasks.append(self.town(town.id))
+        return await asyncio.gather(*tasks)
 
     async def turn(client: Client) -> int:
         """Get the current turn number.
