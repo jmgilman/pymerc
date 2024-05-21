@@ -10,7 +10,7 @@ class Business(BaseModel):
     """A business in the game."""
 
     account: BusinessAccount
-    account_id: int
+    account_id: str
     building_ids: list[int]
     buildings: list[Building]
     contract_ids: list[str]
@@ -23,7 +23,7 @@ class Business(BaseModel):
 class BusinessAccount(BaseModel):
     """The account of a business."""
 
-    id: int
+    id: str
     name: str
     owner_id: int
     assets: dict[common.Asset, BusinessAccountAsset]
