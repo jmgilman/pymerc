@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+# [0.4.0] - 2024-05-20
+
+### Added
+
+- Adds support for businesses endpoint
+- Adds support for buildings endpoint
+- Adds support for turn endpoint
+- Adds several higher level game objects to make API usage easier
+- Adds towns method
+
+### Changed
+
+- Makes async code a bit more efficient
+
 ## [0.3.0] - 2024-05-17
 
 ### Added
@@ -35,7 +49,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release
 
-[unreleased]: https://github.com/jmgilman/pymerc/compare/v0.3.0...HEAD
+[unreleased]: https://github.com/jmgilman/pymerc/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/jmgilman/pymerc/compare/v0.4.0
 [0.3.0]: https://github.com/jmgilman/pymerc/releases/tag/v0.3.0
 [0.2.0]: https://github.com/jmgilman/pymerc/releases/tag/v0.2.0
 [0.1.0]: https://github.com/jmgilman/pymerc/releases/tag/v0.1.0
