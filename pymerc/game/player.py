@@ -24,7 +24,7 @@ class Player:
         for id in self.business.transport_ids:
             self.transports.append(await self._client.transport(id))
 
-        self.storehouse = await self._client.storehouse(self._get_storehouse_id())
+        self.storehouse = await self._client.building(self._get_storehouse_id())
 
     @property
     def buildings(self) -> list[Building]:
@@ -36,7 +36,7 @@ class Player:
         """The amount of money the player has."""
         return self.business.account.assets.get(Asset.Money).balance
 
-    def get_item(self, item: Item) -> Optional[InventoryAccountAsset]:
+    def item(self, item: Item) -> Optional[InventoryAccountAsset]:
         """Get an item from the player's storehouse.
 
         Args:
@@ -47,7 +47,7 @@ class Player:
         """
         return self.storehouse.storage.inventory.account.assets.get(item, None)
 
-    def get_item_flow(self, item: Item) -> Optional[InventoryFlow]:
+    def item_flow(self, item: Item) -> Optional[InventoryFlow]:
         """Get the flow of an item from the player's storehouse.
 
         Args:

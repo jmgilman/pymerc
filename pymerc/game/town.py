@@ -89,8 +89,8 @@ class Town:
         """
         return await self._client.regions.get(self._data.region)
 
-    def get_item(self, name: str) -> Optional[models.TownMarketItem]:
-        """Gets an item from the market.
+    def item(self, name: str) -> Optional[models.TownMarketItem]:
+        """Get an item from the market.
 
         Args:
             name (str): The name of the item
@@ -100,10 +100,10 @@ class Town:
         """
         return self._market.markets.get(name)
 
-    def get_structures(
+    def structures(
         self, type: common.BuildingType
     ) -> list[models.TownDomainStructure]:
-        """Gets structures of a given type in the town.
+        """Get structures of a given type in the town.
 
         Args:
             type (BuildingType): The type of structure to find

@@ -19,17 +19,8 @@ class Transport:
         self.data = await self._client.transports_api.get(self.id)
 
     @property
-    def inventory(self) -> Inventory:
-        """Returns the inventory of the transport."""
-        return self.data.inventory
-
-    @property
-    def route(self) -> Inventory:
-        """Returns the route of the transport."""
-        return self.data.route
-
-    def get_exports(self) -> list[Item]:
-        """Get the exports of the transport.
+    def exports(self) -> list[Item]:
+        """The exports of the transport.
 
         Returns:
             List[item]: The exports of the transport.
@@ -41,8 +32,9 @@ class Transport:
 
         return exports
 
-    def get_active_exports(self) -> list[Item]:
-        """Get the exports of the transport that traded in the last turn.
+    @property
+    def active_exports(self) -> list[Item]:
+        """The exports of the transport that traded in the last turn.
 
         Returns:
             list[Item]: The exports of the transport that traded in the last turn.
@@ -54,8 +46,9 @@ class Transport:
 
         return exports
 
-    def get_imports(self) -> list[Item]:
-        """Get the imports of the transport.
+    @property
+    def imports(self) -> list[Item]:
+        """The imports of the transport.
 
         Returns:
             list[Item]: The imports of the transport.
@@ -67,8 +60,9 @@ class Transport:
 
         return imports
 
-    def get_active_imports(self) -> list[Item]:
-        """Get the imports of the transport that traded in the last turn.
+    @property
+    def active_imports(self) -> list[Item]:
+        """The imports of the transport that traded in the last turn.
 
         Returns:
             list[Item]: The imports of the transport that traded in the last turn.
@@ -79,3 +73,13 @@ class Transport:
                 imports.append(item)
 
         return imports
+
+    @property
+    def inventory(self) -> Inventory:
+        """The inventory of the transport."""
+        return self.data.inventory
+
+    @property
+    def route(self) -> Inventory:
+        """The route of the transport."""
+        return self.data.route
