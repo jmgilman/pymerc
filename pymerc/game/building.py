@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import UserList
 from typing import TYPE_CHECKING, Optional
 
 from pymerc.api.models import common
@@ -131,3 +132,17 @@ class Building:
             bool: Whether the manager was set.
         """
         return self._client.buildings_api.set_manager(self.id, item, manager)
+
+class BuildingsList(UserList):
+    """A list of buildings."""
+
+    def by_type(self, type: common.BuildingType) -> BuildingsList:
+        """Get all buildings of a certain type.
+
+        Args:
+            type (BuildingType): The type of the buildings.
+
+        Returns:
+            BuildingsList: The buildings of the given type.
+        """
+        return BuildingsList([b for b in self if b.type == type])

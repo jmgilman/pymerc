@@ -13,6 +13,7 @@ from pymerc.api.transports import TransportsAPI
 from pymerc.exceptions import TurnInProgressException
 from pymerc.game.building import Building
 from pymerc.game.player import Player
+from pymerc.game.storehouse import Storehouse
 from pymerc.game.town import Town
 from pymerc.game.transport import Transport
 
@@ -126,6 +127,20 @@ class Client:
         await p.load()
 
         return p
+
+    async def storehouse(self, player: Player) -> Storehouse:
+        """Get the player's storehouse.
+
+        Args:
+            player (Player): The player.
+
+        Returns:
+            Storehouse: The player's storehouse.
+        """
+        s = Storehouse(self, player)
+        await s.load()
+
+        return s
 
     async def town(self, town_id: int) -> Town:
         """Get a town by its ID.
