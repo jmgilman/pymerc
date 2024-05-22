@@ -43,9 +43,8 @@ class StaticAPI(BaseAPI):
             list[static.Recipe]: The recipes from the game.
         """
         data = await self._get()
-        corrected_data = self._correct_enum_values(data["F_"])
         type_adapter = TypeAdapter(list[static.Recipe])
-        return type_adapter.validate_python(corrected_data)
+        return type_adapter.validate_python(data["F_"])
 
     async def get_transport(self) -> list[static.Transport]:
         """Get the transport from the game.
@@ -71,20 +70,3 @@ class StaticAPI(BaseAPI):
         response = await self.client.get(BASE_URL + filename)
         pattern = r"JSON\.parse\('(.*?)'\)"
         return json.loads(re.search(pattern, response.text).group(1).replace("\\", ""))
-
-    @staticmethod
-    def _correct_enum_values(data: list[dict]) -> list[dict]:
-        """Corrects the enum values in the recipe data."""
-        item_corrections = {
-            "slaked lime": "slacked lime"
-        }
-
-        for recipe in data:
-            for output in recipe.get("outputs", []):
-                if output["product"] in item_corrections:
-                    output["product"] = item_corrections[output["product"]]
-            for input_ingredient in recipe.get("inputs", []):
-                if input_ingredient["product"] in item_corrections:
-                    input_ingredient["product"] = item_corrections[input_ingredient["product"]]
-
-        return data
