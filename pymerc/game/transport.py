@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
-from pymerc.api.models.common import Item, Inventory
+from pymerc.api.models import common
 
 if TYPE_CHECKING:
     from pymerc.client import Client
@@ -19,7 +19,7 @@ class Transport:
         self.data = await self._client.transports_api.get(self.id)
 
     @property
-    def exports(self) -> list[Item]:
+    def exports(self) -> list[common.Item]:
         """The exports of the transport.
 
         Returns:
@@ -33,7 +33,7 @@ class Transport:
         return exports
 
     @property
-    def active_exports(self) -> list[Item]:
+    def active_exports(self) -> list[common.Item]:
         """The exports of the transport that traded in the last turn.
 
         Returns:
@@ -47,7 +47,7 @@ class Transport:
         return exports
 
     @property
-    def imports(self) -> list[Item]:
+    def imports(self) -> list[common.Item]:
         """The imports of the transport.
 
         Returns:
@@ -61,7 +61,7 @@ class Transport:
         return imports
 
     @property
-    def active_imports(self) -> list[Item]:
+    def active_imports(self) -> list[common.Item]:
         """The imports of the transport that traded in the last turn.
 
         Returns:
@@ -75,16 +75,16 @@ class Transport:
         return imports
 
     @property
-    def inventory(self) -> Inventory:
+    def inventory(self) -> common.Inventory:
         """The inventory of the transport."""
         return self.data.inventory
 
     @property
-    def route(self) -> Inventory:
+    def route(self) -> common.Inventory:
         """The route of the transport."""
         return self.data.route
 
-    def exported(self, item: Item) -> bool:
+    def exported(self, item: common.Item) -> bool:
         """Returns whether the transport exported the item in the last turn.
 
         Args:
@@ -95,7 +95,7 @@ class Transport:
         """
         return item in self.active_exports
 
-    def imported(self, item: Item) -> bool:
+    def imported(self, item: common.Item) -> bool:
         """Returns whether the transport imported the item in the last turn.
 
         Args:
@@ -105,3 +105,14 @@ class Transport:
             bool: Whether the transport imported the item in the last turn.
         """
         return item in self.active_imports
+
+    def route_item(self, item: common.Item) -> Optional[common.InventoryAccountAsset]:
+        """Returns the route data for the item, if it exists.
+
+        Args:
+            item (Item): The item to get the route data for.
+
+        Returns:
+            dict: The route data for the item, if it exists.
+        """
+        return self.data.route.account.assets.get(item, None)

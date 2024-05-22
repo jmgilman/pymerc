@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
 from pymerc.api.models.buildings import Building
-from pymerc.api.models.common import Asset, BuildingType, InventoryAccountAsset, InventoryFlow, Item
+from pymerc.api.models import common
 
 if TYPE_CHECKING:
     from pymerc.client import Client
@@ -34,9 +34,9 @@ class Player:
     @property
     def money(self) -> float:
         """The amount of money the player has."""
-        return self.business.account.assets.get(Asset.Money).balance
+        return self.business.account.assets.get(common.Asset.Money).balance
 
-    def item(self, item: Item) -> Optional[InventoryAccountAsset]:
+    def item(self, item: common.Item) -> Optional[common.InventoryAccountAsset]:
         """Get an item from the player's storehouse.
 
         Args:
@@ -47,7 +47,7 @@ class Player:
         """
         return self.storehouse.storage.inventory.account.assets.get(item, None)
 
-    def item_flow(self, item: Item) -> Optional[InventoryFlow]:
+    def item_flow(self, item: common.Item) -> Optional[common.InventoryFlow]:
         """Get the flow of an item from the player's storehouse.
 
         Args:
@@ -67,7 +67,7 @@ class Player:
         storehouses = [
             building.id
             for building in self.business.buildings
-            if building.type == BuildingType.Storehouse
+            if building.type == common.BuildingType.Storehouse
         ]
 
         if storehouses:
