@@ -17,13 +17,26 @@ class Building:
         self._client = client
         self.id = id
         self.data: Optional[BuildingModel] = None
+        self.total_flow: Optional[dict[common.Item, common.InventoryFlow]] = None
+        self.operations: Optional[list[common.Operation]] = None
 
     async def load(self):
         """Loads the data for the building."""
         self.data = await self._client.buildings_api.get(self.id)
+        building_operations = await self._client.buildings_api.get_operations(self.id)
+        self.total_flow = building_operations['total_flow']
+        self.operations = building_operations['operations']
 
     @property
     def flows(self) -> Optional[dict[common.Item, common.InventoryFlow]]:
+        """The flows of the building."""
+        if self.total_flow:
+            return self.total_flow
+        else:
+            return None
+
+    @property
+    def previous_flows(self) -> Optional[dict[common.Item, common.InventoryFlow]]:
         """The flows of the building."""
         if self.data.storage:
             return self.data.storage.inventory.previous_flows

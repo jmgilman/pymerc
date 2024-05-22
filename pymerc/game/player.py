@@ -45,7 +45,18 @@ class Player:
         Returns:
             Optional[InventoryAccountAsset]: The item, if it exists.
         """
-        return self.storehouse.storage.inventory.account.assets.get(item, None)
+        return self.storehouse.items.get(item, None)
+
+    def previous_item_flow(self, item: common.Item) -> Optional[common.InventoryFlow]:
+        """Get the previous flow of an item from the player's storehouse.
+
+        Args:
+            item (Item): The item to get.
+
+        Returns:
+            Optional[InventoryFlow]: The flow of the item, if it exists.
+        """
+        return self.storehouse.previous_flows.get(item, None)
 
     def item_flow(self, item: common.Item) -> Optional[common.InventoryFlow]:
         """Get the flow of an item from the player's storehouse.
@@ -56,7 +67,7 @@ class Player:
         Returns:
             Optional[InventoryFlow]: The flow of the item, if it exists.
         """
-        return self.storehouse.storage.inventory.previous_flows.get(item, None)
+        return self.storehouse.flows.get(item, None)
 
     def _get_storehouse_id(self) -> Optional[int]:
         """Get the ID of the player's storehouse.

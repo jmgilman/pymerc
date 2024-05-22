@@ -42,3 +42,6 @@ class Building(BaseModel):
 
     id: int
     type: common.BuildingType
+
+class Operation(BaseModel):
+    """A business operation"""

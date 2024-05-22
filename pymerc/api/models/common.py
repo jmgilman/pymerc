@@ -641,13 +641,31 @@ class InventoryFlow(BaseModel):
     production: Optional[float] = None
     production_cost: Optional[float] = None
     purchase: Optional[int] = None
+    purchase_cost: Optional[float] = None
+    resident: Optional[float] = None
     sale: Optional[int] = None
+    sale_value: Optional[float] = None
+
+
+class DeliveryCost(BaseModel):
+    """Represents the delivery cost of a building."""
+    land_distance: float
+    ferry_fee: Optional[float] = None
+
 
 class Operation(BaseModel):
     """Represents an operation."""
-    target: float
-    production: float
-    provision: float
+    target: float = None
+    production: Optional[float] = None
+    provision: Optional[float] = None
+    reference: Optional[str] = None
+    recipe: Optional[Recipe] = None
+    volume = Optional[float] = None
+    tax_rate = Optional[float] = None
+    tax = Optional[float] = None
+    delivery_cost = Optional[DeliveryCost]
+    flows: Optional[dict[Item, InventoryFlow]] = None
+
 
 class Path(BaseModel):
     """Represents part of a path."""
