@@ -83,3 +83,25 @@ class Transport:
     def route(self) -> Inventory:
         """The route of the transport."""
         return self.data.route
+
+    def exported(self, item: Item) -> bool:
+        """Returns whether the transport exported the item in the last turn.
+
+        Args:
+            item (Item): The item to check.
+
+        Returns:
+            bool: Whether the transport exported the item in the last turn.
+        """
+        return item in self.active_exports
+
+    def imported(self, item: Item) -> bool:
+        """Returns whether the transport imported the item in the last turn.
+
+        Args:
+            item (Item): The item to check.
+
+        Returns:
+            bool: Whether the transport imported the item in the last turn.
+        """
+        return item in self.active_imports
