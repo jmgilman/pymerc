@@ -217,7 +217,7 @@ class Item(Enum):
     Salt = "salt"
     Scythes = "scythes"
     SilverBars = "silver bars"
-    SlackedLime = "slacked lime"
+    SlakedLime = "slaked lime"
     Snekkja = "snekkja"
     Spirits = "spirits"
     SteelIngots = "steel ingots"
@@ -600,6 +600,7 @@ class InventoryAccount(BaseModel):
 
     assets: dict[Item, InventoryAccountAsset]
     id: str
+    master_id: Optional[str] = None
     name: Optional[str] = None
     owner_id: int
     sponsor_id: Optional[int] = None
@@ -611,7 +612,7 @@ class InventoryAccountAsset(BaseModel):
     balance: float
     capacity: Optional[float] = None
     purchase: Optional[float] = None
-    purchase_cost: Optional[float] = None
+    purchase_price: Optional[float] = None
     reserved: float
     reserved_capacity: Optional[float] = None
     sale: Optional[float] = None
@@ -647,6 +648,12 @@ class Operation(BaseModel):
     target: float
     production: float
     provision: float
+
+class Path(BaseModel):
+    """Represents part of a path."""
+    x: int
+    y: int
+    c: float
 
 class Producer(BaseModel):
     """Represents a producer."""

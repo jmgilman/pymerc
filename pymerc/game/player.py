@@ -20,16 +20,11 @@ class Player:
         self.data = await self._client.player_api.get()
         self.business = await self._client.businesses_api.get(self.data.household.business_ids[0])
 
-        storehouses = [
-            building.id
-            for building in self.business.buildings
-            if building.type == BuildingType.Storehouse
-        ]
+        self.transports = []
+        for id in self.business.transport_ids:
+            self.transports.append(await self._client.transport(id))
 
-        if storehouses:
-            self.storehouse = await self._client.building(storehouses[0])
-        else:
-            self.storehouse = None
+        self.storehouse = await self._client.storehouse(self._get_storehouse_id())
 
     @property
     def buildings(self) -> list[Building]:
@@ -62,3 +57,20 @@ class Player:
             Optional[InventoryFlow]: The flow of the item, if it exists.
         """
         return self.storehouse.storage.inventory.previous_flows.get(item, None)
+
+    def _get_storehouse_id(self) -> Optional[int]:
+        """Get the ID of the player's storehouse.
+
+        Returns:
+            Optional[int]: The ID of the storehouse, if it exists.
+        """
+        storehouses = [
+            building.id
+            for building in self.business.buildings
+            if building.type == BuildingType.Storehouse
+        ]
+
+        if storehouses:
+            return storehouses[0]
+        else:
+            return None

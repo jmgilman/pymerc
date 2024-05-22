@@ -9,10 +9,13 @@ from pymerc.api.map import MapAPI
 from pymerc.api.player import PlayerAPI
 from pymerc.api.static import StaticAPI
 from pymerc.api.towns import TownsAPI
+from pymerc.api.transports import TransportsAPI
 from pymerc.exceptions import TurnInProgressException
 from pymerc.game.building import Building
 from pymerc.game.player import Player
+from pymerc.game.storehouse import Storehouse
 from pymerc.game.town import Town
+from pymerc.game.transport import Transport
 
 
 class Client:
@@ -28,6 +31,7 @@ class Client:
     player_api: PlayerAPI
     static_api: StaticAPI
     towns_api: TownsAPI
+    transports_api: TransportsAPI
 
     def __init__(self, user: str, token: str):
         self.session = httpx.AsyncClient(http2=True)
@@ -43,6 +47,7 @@ class Client:
         self.player_api = PlayerAPI(self)
         self.static_api = StaticAPI(self)
         self.towns_api = TownsAPI(self)
+        self.transports_api = TransportsAPI(self)
 
     async def close(self):
         await self.session.aclose()
@@ -123,6 +128,21 @@ class Client:
 
         return p
 
+    async def storehouse(self, id: int) -> Storehouse:
+        """Get a storehouse by its ID.
+
+        Args:
+            id (int): The ID of the storehouse.
+
+        Returns:
+            Storehouse: The storehouse with the given ID.
+        """
+        s = Storehouse(self, id)
+        await s.load()
+
+        return s
+
+
     async def town(self, town_id: int) -> Town:
         """Get a town by its ID.
 
@@ -152,6 +172,20 @@ class Client:
                 continue
             tasks.append(self.town(town.id))
         return await asyncio.gather(*tasks)
+
+    async def transport(self, id: int) -> Transport:
+        """Get a transport by its ID.
+
+        Args:
+            id (int): The ID of the transport.
+
+        Returns:
+            Transport: The transport with the given ID.
+        """
+        t = Transport(self, id)
+        await t.load()
+
+        return t
 
     async def turn(client: Client) -> int:
         """Get the current turn number.
