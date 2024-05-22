@@ -4,6 +4,9 @@ from typing import TYPE_CHECKING, Optional
 
 from pymerc.api.models.buildings import Building
 from pymerc.api.models import common
+from pymerc.game.exports import ExportsList, ExportsSummed
+from pymerc.game.imports import ImportsList, ImportsSummed
+from pymerc.game.transport import Transport
 
 if TYPE_CHECKING:
     from pymerc.client import Client
@@ -12,19 +15,39 @@ if TYPE_CHECKING:
 class Player:
     """A higher level representation of a player in the game."""
 
+    business: common.Business
+    data: common.Player
+    exports: ExportsSummed
+    imports: ImportsSummed
+    transports: list[Transport]
+
     def __init__(self, client: Client):
         self._client = client
+        self.exports = ExportsSummed()
+        self.imports = ImportsSummed()
 
     async def load(self):
         """Loads the data for the player."""
         self.data = await self._client.player_api.get()
         self.business = await self._client.businesses_api.get(self.data.household.business_ids[0])
+        self.storehouse = await self._client.building(self._get_storehouse_id())
 
         self.transports = []
         for id in self.business.transport_ids:
             self.transports.append(await self._client.transport(id))
 
-        self.storehouse = await self._client.building(self._get_storehouse_id())
+        for transport in self.transports:
+            for item, exp in transport.exports.items():
+                if item not in self.exports:
+                    self.exports[item] = ExportsList([exp])
+                else:
+                    self.exports[item].append(exp)
+
+            for item, imp in transport.imports.items():
+                if item not in self.imports:
+                    self.imports[item] = ImportsList([imp])
+                else:
+                    self.imports[item].append(imp)
 
     @property
     def buildings(self) -> list[Building]:
@@ -35,28 +58,6 @@ class Player:
     def money(self) -> float:
         """The amount of money the player has."""
         return self.business.account.assets.get(common.Asset.Money).balance
-
-    def item(self, item: common.Item) -> Optional[common.InventoryAccountAsset]:
-        """Get an item from the player's storehouse.
-
-        Args:
-            item (Item): The item to get.
-
-        Returns:
-            Optional[InventoryAccountAsset]: The item, if it exists.
-        """
-        return self.storehouse.storage.inventory.account.assets.get(item, None)
-
-    def item_flow(self, item: common.Item) -> Optional[common.InventoryFlow]:
-        """Get the flow of an item from the player's storehouse.
-
-        Args:
-            item (Item): The item to get.
-
-        Returns:
-            Optional[InventoryFlow]: The flow of the item, if it exists.
-        """
-        return self.storehouse.storage.inventory.previous_flows.get(item, None)
 
     def _get_storehouse_id(self) -> Optional[int]:
         """Get the ID of the player's storehouse.
