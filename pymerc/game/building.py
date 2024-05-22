@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
+
 from pymerc.api.models import common
 from pymerc.api.models.buildings import Building as BuildingModel
 
@@ -22,6 +23,14 @@ class Building:
         self.data = await self._client.buildings_api.get(self.id)
 
     @property
+    def flows(self) -> Optional[dict[common.Item, common.InventoryFlow]]:
+        """The flows of the building."""
+        if self.data.storage:
+            return self.data.storage.inventory.previous_flows
+        else:
+            return None
+
+    @property
     def inventory(self) -> Optional[common.Inventory]:
         """Returns the inventory of the building."""
         if self.data and self.data.storage:
@@ -33,7 +42,13 @@ class Building:
         """Returns the items in the building's storage."""
         if self.data and self.data.storage:
             return self.data.storage.inventory.account.assets
-        return None
+        else:
+            return None
+
+    @property
+    def managers(self) -> dict[common.Item, common.InventoryManager]:
+        """The managers of the building."""
+        return self.data.storage.inventory.managers
 
     @property
     def production(self) -> Optional[common.Producer]:
@@ -45,7 +60,8 @@ class Building:
         """Returns the production flows of the building."""
         if self.data and self.data.producer:
             return self.data.producer.inventory.previous_flows
-        return None
+        else:
+            return None
 
     @property
     def size(self) -> Optional[int]:
@@ -71,6 +87,48 @@ class Building:
     def upgrades(self) -> Optional[list[common.BuildingUpgradeType]]:
         """Returns the upgrades installed for the building."""
         return self.data.upgrades if self.data else None
+
+    def flow(self, item: common.Item) -> Optional[common.InventoryFlow]:
+        """Get the flow of an item in the building.
+
+        Args:
+            item (Item): The item.
+
+        Returns:
+            Optional[InventoryFlow]: The flow of the item, if it exists.
+        """
+        if self.data.storage:
+            return self.data.storage.inventory.previous_flows.get(item, None)
+        else:
+            return None
+
+    def item(self, item: common.Item) -> Optional[common.InventoryAccountAsset]:
+        """Get an item in the building.
+
+        Args:
+            item (Item): The item.
+
+        Returns:
+            Optional[InventoryAccountAsset]: The item, if it exists.
+        """
+        if self.data.storage:
+            return self.data.storage.inventory.account.assets.get(item, None)
+        else:
+            return None
+
+    def manager(self, item: common.Item) -> Optional[common.InventoryManager]:
+        """Get the manager of an item in the building.
+
+        Args:
+            item (Item): The item.
+
+        Returns:
+            Optional[InventoryManager]: The manager of the item, if it exists.
+        """
+        if self.data.storage:
+            return self.data.storage.inventory.managers.get(item, None)
+        else:
+            return None
 
     def set_manager(self, item: common.Item, manager: common.InventoryManager) -> bool:
         """Set the manager for an item in the building.
