@@ -17,7 +17,7 @@ class Business(BaseModel):
     id: int
     name: str
     owner_id: int
-    transport_ids: list[int]
+    transport_ids: Optional[list[int]] = None
 
 
 class BusinessAccount(BaseModel):

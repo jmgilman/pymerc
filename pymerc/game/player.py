@@ -39,8 +39,9 @@ class Player:
             self.buildings.append(await self._client.building(id))
 
         self.transports = []
-        for id in self.business.transport_ids:
-            self.transports.append(await self._client.transport(id))
+        if self.business.transport_ids:
+            for id in self.business.transport_ids:
+                self.transports.append(await self._client.transport(id))
 
         for transport in self.transports:
             for item, exp in transport.exports.items():

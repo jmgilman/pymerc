@@ -23,7 +23,7 @@ class Transport(BaseModel):
     inventory: common.Inventory
     cargo: TransportCargo = None
     previous_operations: Optional[common.Operation] = None
-    provider_id: int
+    provider_id: Optional[int] = None
     producer: Optional[common.Producer] = None
     route: Optional[TransportRoute] = None
     journey: TransportJourney
@@ -31,7 +31,7 @@ class Transport(BaseModel):
 class TransportCargo(BaseModel):
     """Represents the cargo of a transport."""
     reference: str
-    inventory: common.Inventory
+    inventory: Optional[common.Inventory] = None
 
 class TransportJourney(BaseModel):
     """Represents a journey of a transport."""

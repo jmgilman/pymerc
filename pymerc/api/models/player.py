@@ -9,7 +9,7 @@ from pymerc.api.models import common
 class Player(BaseModel):
     username: str
     household: Household
-    discord_id: Optional[str]
+    discord_id: Optional[str] = None
     settings: Settings
     active: bool
 
@@ -23,7 +23,7 @@ class Household(BaseModel):
     account_id: str
     business_ids: list[str]
     prestige: float
-    prestige_impacts: Optional[list[PrestigeImpact]]
+    prestige_impacts: Optional[list[PrestigeImpact]] = None
     workers: list[Worker]
     operations: list[str]
     caps: dict[str, int]
@@ -45,7 +45,7 @@ class Worker(BaseModel):
 class Sustenance(BaseModel):
     reference: str
     inventory: common.Inventory
-    provider_id: Optional[str]
+    provider_id: Optional[str] = None
 
 
 class Settings(BaseModel):
