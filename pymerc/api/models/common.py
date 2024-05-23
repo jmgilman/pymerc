@@ -594,6 +594,10 @@ class Inventory(BaseModel):
     previous_flows: Optional[dict[Item, InventoryFlow]] = {}
     reserved: Optional[int] = None
 
+    @property
+    def items(self) -> dict[Item, InventoryAccountAsset]:
+        """The items in the inventory."""
+        return self.account.assets
 
 class InventoryAccount(BaseModel):
     """Represents an inventory account."""
@@ -619,6 +623,31 @@ class InventoryAccountAsset(BaseModel):
     sale_price: Optional[float] = None
     unit_cost: Optional[float] = None
 
+    @property
+    def purchased(self) -> bool:
+        """Whether the asset was purchased."""
+        return self.purchase is not None
+
+    @property
+    def sold(self) -> bool:
+        """Whether the asset was sold."""
+        return self.sale is not None
+
+    @property
+    def total_purchase(self) -> float:
+        """The total purchase cost of the asset."""
+        return self.purchase * self.purchase_price
+
+    @property
+    def total_sale(self) -> float:
+        """The total sale cost of the asset."""
+        return self.sale * self.sale_price
+
+    @property
+    def total_value(self) -> float:
+        """The total value of the asset."""
+        return self.balance * self.unit_cost
+
 
 class InventoryManager(BaseModel):
     """Represents an inventory manager."""
@@ -630,6 +659,25 @@ class InventoryManager(BaseModel):
     sell_price: Optional[float] = None
     sell_volume: Optional[int] = None
 
+    @property
+    def buying(self) -> bool:
+        """Whether the manager is buying."""
+        return self.buy_price is not None and self.buy_volume is not None
+
+    @property
+    def max_buy_price(self) -> float:
+        """The maximum buy price of the manager."""
+        return self.buy_price * self.buy_volume
+
+    @property
+    def max_sell_price(self) -> float:
+        """The maximum sell price of the manager."""
+        return self.sell_price * self.sell_volume
+
+    @property
+    def selling(self) -> bool:
+        """Whether the manager is selling."""
+        return self.sell_price is not None and self.sell_volume is not None
 
 class InventoryFlow(BaseModel):
     """Represents an inventory flow."""
@@ -666,6 +714,16 @@ class Operation(BaseModel):
     delivery_cost = Optional[DeliveryCost]
     flows: Optional[dict[Item, InventoryFlow]] = None
 
+
+    @property
+    def surplus(self) -> float:
+        """The surplus of the operation."""
+        return self.production - self.target
+
+    @property
+    def shortfall(self) -> float:
+        """The shortfall of the operation."""
+        return self.target - self.production
 
 class Path(BaseModel):
     """Represents part of a path."""
