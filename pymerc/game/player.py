@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from pymerc.api.models import common
+from pymerc.api.models import common, businesses
 from pymerc.api.models.player import Household, Sustenance
 from pymerc.api.models.player import Player as PlayerModel
 from pymerc.game.building import BuildingsList
@@ -18,7 +18,7 @@ class Player:
     """A higher level representation of a player in the game."""
 
     buildings: BuildingsList
-    business: common.Business
+    business: businesses.Business
     data: PlayerModel
     exports: ExportsSummed
     imports: ImportsSummed
