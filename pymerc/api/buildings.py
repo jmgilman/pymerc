@@ -21,6 +21,18 @@ class BuildingsAPI(BaseAPI):
         response = await self.client.get(f"{BASE_URL}{id}")
         return buildings.Building.model_validate(response.json())
 
+    async def get_operations(self, id: int) -> buildings.BuildingOperation:
+        """Get the operations for a building.
+
+        Args:
+            id (int): The ID of the building.
+
+        Returns:
+            BuildingOperation: The building operation information.
+        """
+        response = await self.client.get(f"{BASE_URL}{id}/operations")
+        return buildings.BuildingOperation.model_validate(response.json())
+
     async def set_manager(self, id: int, item: common.Item, manager: common.InventoryManager) -> bool:
         """Set the manager for an item in a building.
 

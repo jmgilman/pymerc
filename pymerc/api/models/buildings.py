@@ -11,7 +11,7 @@ class Building(BaseModel):
 
     capacity: Optional[int] = None
     construction: Optional[BuildingConstruction] = None
-    delivery_cost: BuildingDeliveryCost
+    delivery_cost: common.DeliveryCost
     id: int
     land: Optional[list[common.Location]] = None
     name: str
@@ -37,15 +37,14 @@ class BuildingConstruction(BaseModel):
     upgrade_type: Optional[common.BuildingUpgradeType] = None
 
 
-class BuildingDeliveryCost(BaseModel):
-    """Represents the delivery cost of a building."""
-
-    land_distance: float
-
-
 class BuildingStorage(BaseModel):
     """Represents the storage of a building."""
 
     inventory: common.Inventory
     operations: list[str]
     reference: str
+
+
+class BuildingOperation(BaseModel):
+    total_flow: Optional[dict[common.Item, common.InventoryFlow]] = None
+    operations: Optional[list[common.Operation]] = None

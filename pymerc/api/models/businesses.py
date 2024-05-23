@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from pymerc.api.models import common
 
@@ -10,10 +10,10 @@ class Business(BaseModel):
     """A business in the game."""
 
     account: BusinessAccount
-    account_id: int
+    account_id: str
     building_ids: list[int]
     buildings: list[Building]
-    contract_ids: list[str]
+    contract_ids: Optional[list[str]] = Field(default=None)
     id: int
     name: str
     owner_id: int
@@ -23,7 +23,7 @@ class Business(BaseModel):
 class BusinessAccount(BaseModel):
     """The account of a business."""
 
-    id: int
+    id: str
     name: str
     owner_id: int
     assets: dict[common.Asset, BusinessAccountAsset]
