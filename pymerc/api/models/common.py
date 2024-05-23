@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from enum import Enum
 from typing import Optional
 
@@ -244,6 +245,7 @@ class ItemType(Enum):
     Commodity = "commodity"
     Service = "service"
     Special = "special"
+
 
 class Recipe(Enum):
     BakeBread1 = "bake bread 1"
@@ -546,7 +548,6 @@ class Recipe(Enum):
     YokeOx2b = "yoke ox 2b"
 
 
-
 class Skill(Enum):
     """Represents a worker skill."""
 
@@ -602,6 +603,7 @@ class Inventory(BaseModel):
     def items(self) -> dict[Item, InventoryAccountAsset]:
         """The items in the inventory."""
         return self.account.assets
+
 
 class InventoryAccount(BaseModel):
     """Represents an inventory account."""
@@ -683,6 +685,7 @@ class InventoryManager(BaseModel):
         """Whether the manager is selling."""
         return self.sell_price is not None and self.sell_volume is not None
 
+
 class InventoryFlow(BaseModel):
     """Represents an inventory flow."""
 
@@ -701,12 +704,14 @@ class InventoryFlow(BaseModel):
 
 class DeliveryCost(BaseModel):
     """Represents the delivery cost of a building."""
+
     land_distance: float
     ferry_fee: Optional[float] = None
 
 
 class Operation(BaseModel):
     """Represents an operation."""
+
     target: float = None
     production: Optional[float] = None
     provision: Optional[float] = None
@@ -718,7 +723,6 @@ class Operation(BaseModel):
     delivery_cost: Optional[DeliveryCost] = None
     flows: Optional[dict[Item, InventoryFlow]] = None
 
-
     @property
     def surplus(self) -> float:
         """The surplus of the operation."""
@@ -729,14 +733,18 @@ class Operation(BaseModel):
         """The shortfall of the operation."""
         return self.target - self.production
 
+
 class Path(BaseModel):
     """Represents part of a path."""
+
     x: int
     y: int
     c: float
 
+
 class Producer(BaseModel):
     """Represents a producer."""
+
     inventory: Inventory
     limited: bool
     manager: str

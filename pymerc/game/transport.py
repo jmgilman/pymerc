@@ -9,6 +9,7 @@ from pymerc.game.imports import Import, Imports
 if TYPE_CHECKING:
     from pymerc.client import Client
 
+
 class Transport:
     """A higher level representation of a transport in the game."""
 

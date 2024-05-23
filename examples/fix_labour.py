@@ -2,10 +2,11 @@
 This example demonstrates how to adjust the amount of labour being automatically
 purchased in a storehouse to match the amount of labour being used.
 """
+
+import asyncio
 import math
 import os
 
-import asyncio
 from dotenv import load_dotenv
 
 from pymerc.api.models.common import Item
@@ -13,6 +14,7 @@ from pymerc.client import Client
 
 # Load the API_USER and API_TOKEN from the environment
 load_dotenv()
+
 
 async def main():
     client = Client(os.environ["API_USER"], os.environ["API_TOKEN"])

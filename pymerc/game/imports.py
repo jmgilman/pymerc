@@ -10,6 +10,7 @@ from pymerc.game.town import Town
 if TYPE_CHECKING:
     from pymerc.game.transport import Transport
 
+
 @dataclass
 class Import:
     """A representation of an import in the game."""
@@ -43,6 +44,7 @@ class Import:
         """The volume of the import if it was bought at max volume."""
         return self.manager.buy_volume
 
+
 class Imports(UserDict[common.Item, Import]):
     """A collection of imports for a transport in the game."""
 
@@ -65,6 +67,7 @@ class Imports(UserDict[common.Item, Import]):
     def volume(self) -> int:
         """The total volume of all imports if they were bought at max volume."""
         return sum([imp.volume for imp in self.data.values()])
+
 
 class ImportsList(UserList[Import]):
     """A collection of imports for a transport in the game."""
@@ -89,6 +92,7 @@ class ImportsList(UserList[Import]):
         """The total volume of all imports if they were bought at max volume."""
         return sum([imp.volume for imp in self.data])
 
+
 class ImportsSummed(UserDict[common.Item, ImportsList]):
     """A collection of imports for a player in the game."""
 
@@ -100,12 +104,20 @@ class ImportsSummed(UserDict[common.Item, ImportsList]):
     @property
     def cost_flowed(self) -> float:
         """The total cost of all imports that flowed in the last turn."""
-        return sum([sum([imp.cost_flowed for imp in imps]) for imps in self.data.values()])
+        return sum(
+            [sum([imp.cost_flowed for imp in imps]) for imps in self.data.values()]
+        )
 
     @property
     def flowed(self) -> ImportsSummed:
         """The imports that flowed in the last turn."""
-        return ImportsSummed({item: imps for item, imps in self.data.items() if any([imp.flowed for imp in imps])})
+        return ImportsSummed(
+            {
+                item: imps
+                for item, imps in self.data.items()
+                if any([imp.flowed for imp in imps])
+            }
+        )
 
     @property
     def volume(self) -> int:
@@ -114,8 +126,20 @@ class ImportsSummed(UserDict[common.Item, ImportsList]):
 
     def by_town_id(self, town_id: int) -> ImportsSummed:
         """Returns the imports for a town by id."""
-        return ImportsSummed({item: imps for item, imps in self.data.items() if imps[0].town.data.id == town_id})
+        return ImportsSummed(
+            {
+                item: imps
+                for item, imps in self.data.items()
+                if imps[0].town.data.id == town_id
+            }
+        )
 
     def by_town_name(self, town_name: str) -> ImportsSummed:
         """Returns the imports for a town by name."""
-        return ImportsSummed({item: imps for item, imps in self.data.items() if imps[0].town.data.name == town_name})
+        return ImportsSummed(
+            {
+                item: imps
+                for item, imps in self.data.items()
+                if imps[0].town.data.name == town_name
+            }
+        )

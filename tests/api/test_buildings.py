@@ -1,7 +1,6 @@
 import pytest
 
 from pymerc.client import Client
-from pymerc.api.models.common import BuildingType
 
 
 @pytest.mark.asyncio

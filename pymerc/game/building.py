@@ -85,7 +85,11 @@ class Building:
     @property
     def target_production(self) -> Optional[float]:
         """Returns the production target of the building."""
-        return self.production.target if self.production and self.production.target else 0.0
+        return (
+            self.production.target
+            if self.production and self.production.target
+            else 0.0
+        )
 
     @property
     def type(self) -> common.BuildingType:
@@ -178,10 +182,13 @@ class Building:
                 else:
                     inventory_managers = []
 
-                return recipe.calculate_target_labor(self.target_production, inventory_assets, inventory_managers)
+                return recipe.calculate_target_labor(
+                    self.target_production, inventory_assets, inventory_managers
+                )
 
         return 0.0
-      
+
+
 class BuildingsList(UserList):
     """A list of buildings."""
 

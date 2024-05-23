@@ -9,6 +9,7 @@ from pymerc.api.models import common
 
 class Transport(BaseModel):
     """Represents a transport."""
+
     id: int
     reference: str
     type: common.Transport
@@ -28,25 +29,33 @@ class Transport(BaseModel):
     route: Optional[TransportRoute] = None
     journey: TransportJourney
 
+
 class TransportCargo(BaseModel):
     """Represents the cargo of a transport."""
+
     reference: str
     inventory: common.Inventory
 
+
 class TransportJourney(BaseModel):
     """Represents a journey of a transport."""
+
     category: str
     start_town_id: int
     distance: float
     moves: float
     legs: list[TransportJourneyLeg]
 
+
 class TransportJourneyLeg(BaseModel):
     """Represents a leg of a journey of a transport."""
+
     path: list[common.Path]
+
 
 class TransportRoute(BaseModel):
     """Represents a route of a transport."""
+
     id: int
     reference: str
     local_town: int

@@ -26,7 +26,9 @@ class Storehouse:
 
     async def load(self):
         """Loads the data for the storehouse."""
-        storehouses = self.player.buildings.by_type(common.BuildingType.Storehouse) + self.player.buildings.by_type(common.BuildingType.Warehouse)
+        storehouses = self.player.buildings.by_type(
+            common.BuildingType.Storehouse
+        ) + self.player.buildings.by_type(common.BuildingType.Warehouse)
         if not storehouses:
             raise ValueError("No storehouses found.")
 
@@ -39,6 +41,7 @@ class Storehouse:
                 manager=self.data.inventory.managers.get(item, None),
                 flow=self.data.inventory.previous_flows.get(item, None),
             )
+
 
 @dataclass
 class StorehouseItem:

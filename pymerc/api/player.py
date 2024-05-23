@@ -1,7 +1,6 @@
 from pymerc.api.base import BaseAPI
 from pymerc.api.models import player
 
-
 BASE_URL = "https://play.mercatorio.io/api/player"
 
 

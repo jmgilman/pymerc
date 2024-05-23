@@ -3,9 +3,8 @@ from __future__ import annotations
 import math
 from typing import TYPE_CHECKING, Optional
 
-from pymerc.api.models.map import Region
 from pymerc.api.models import towns as models
-from pymerc.api.models import common
+from pymerc.api.models.map import Region
 
 if TYPE_CHECKING:
     from pymerc.client import Client
@@ -99,20 +98,3 @@ class Town:
             Optional[TownMarketItem]: The item, if found
         """
         return self._market.markets.get(name)
-
-    def structures(
-        self, type: common.BuildingType
-    ) -> list[models.TownDomainStructure]:
-        """Get structures of a given type in the town.
-
-        Args:
-            type (BuildingType): The type of structure to find
-
-        Returns:
-            list[TownDomainStructure]: The structures with the given type
-        """
-        return [
-            domain.structure
-            for domain in self._data.domain.values()
-            if domain.structure is not None and domain.structure.type == type
-        ]

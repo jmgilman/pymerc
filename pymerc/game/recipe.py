@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, List
-from pymerc.api.models.common import Item, InventoryAccountAsset, InventoryManager
+from typing import TYPE_CHECKING, Optional
+
+from pymerc.api.models.common import InventoryAccountAsset, InventoryManager, Item
 from pymerc.api.models.static import Recipe as RecipeModel
 
 if TYPE_CHECKING:
     from pymerc.client import Client
-    from pymerc.game.building import Building
 
 
 class Recipe:
@@ -33,8 +33,10 @@ class Recipe:
         return 0.0
 
     def calculate_target_labor(
-            self, target: float, inventory_assets: Optional[dict[Item, InventoryAccountAsset]] = {},
-            inventory_managers: Optional[dict[Item, InventoryManager]] = {}
+        self,
+        target: float,
+        inventory_assets: Optional[dict[Item, InventoryAccountAsset]] = {},
+        inventory_managers: Optional[dict[Item, InventoryManager]] = {},
     ) -> float:
         """Calculates the labor required for the given target multiplier.
 
@@ -54,10 +56,16 @@ class Recipe:
 
             asset = inventory_assets.get(input_ingredient.product)
             if asset:
-                manager = inventory_managers.get(input_ingredient.product, None) if inventory_managers else None
+                manager = (
+                    inventory_managers.get(input_ingredient.product, None)
+                    if inventory_managers
+                    else None
+                )
                 buy_volume = manager.buy_volume if manager and manager.buy_volume else 0
                 capacity = asset.capacity or asset.balance + buy_volume
-                available_amount = min(asset.balance - asset.reserved + buy_volume, capacity)
+                available_amount = min(
+                    asset.balance - asset.reserved + buy_volume, capacity
+                )
 
             if required_amount > available_amount:
                 target = min(target, available_amount / input_ingredient.amount)
