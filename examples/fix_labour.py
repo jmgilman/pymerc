@@ -20,8 +20,8 @@ async def main():
     client = Client(os.environ["API_USER"], os.environ["API_TOKEN"])
     player = await client.player()
 
-    manager = player.storehouse.inventory.managers.get(Item.Labour)
-    flow = player.storehouse.total_flow.get(Item.Labour)
+    manager = player.storehouse.data.inventory.managers.get(Item.Labour)
+    flow = player.storehouse.data.total_flow.get(Item.Labour)
 
     consumed = flow.consumption - flow.production
 
@@ -39,7 +39,7 @@ async def main():
     print(f"Adjusting labour purchase amount to {math.ceil(consumed)}")
     manager.buy_volume = math.ceil(consumed)
 
-    result = await player.storehouse.set_manager(Item.Labour, manager)
+    result = await player.storehouse.data.set_manager(Item.Labour, manager)
     if result:
         print("Labour purchase amount adjusted successfully")
     else:

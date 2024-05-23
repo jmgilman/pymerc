@@ -689,17 +689,18 @@ class InventoryManager(BaseModel):
 class InventoryFlow(BaseModel):
     """Represents an inventory flow."""
 
-    consumption: Optional[float] = None
-    expiration: Optional[float] = None
+    consumption: Optional[float] = 0.0
+    expiration: Optional[float] = 0.0
     export: Optional[int] = None
     imported: Optional[int] = Field(None, alias="import")
-    production: Optional[float] = None
-    production_cost: Optional[float] = None
+    production: Optional[float] = 0.0
+    production_cost: Optional[float] = 0.0
     purchase: Optional[int] = None
-    purchase_cost: Optional[float] = None
+    purchase_cost: Optional[float] = 0.0
     resident: Optional[float] = None
     sale: Optional[int] = None
-    sale_value: Optional[float] = None
+    sale_value: Optional[float] = 0.0
+    shortfall: Optional[float] = 0.0
 
 
 class DeliveryCost(BaseModel):

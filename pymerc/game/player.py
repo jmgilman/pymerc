@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from pymerc.api.models import common
+from pymerc.api.models import common, businesses
 from pymerc.api.models.player import Household, Sustenance
 from pymerc.api.models.player import Player as PlayerModel
 from pymerc.game.building import BuildingsList
@@ -18,7 +18,7 @@ class Player:
     """A higher level representation of a player in the game."""
 
     buildings: BuildingsList
-    business: common.Business
+    business: businesses.Business
     data: PlayerModel
     exports: ExportsSummed
     imports: ImportsSummed
@@ -41,8 +41,9 @@ class Player:
             self.buildings.append(await self._client.building(id))
 
         self.transports = []
-        for id in self.business.transport_ids:
-            self.transports.append(await self._client.transport(id))
+        if self.business.transport_ids:
+            for id in self.business.transport_ids:
+                self.transports.append(await self._client.transport(id))
 
         for transport in self.transports:
             for item, exp in transport.exports.items():
