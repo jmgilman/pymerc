@@ -57,16 +57,22 @@ class StorehouseItem:
         if self.produced:
             costs.append(self.production_cost / self.produced)
         if self.imported:
-            costs.append(self.import_cost / self.imported)
+            costs.append(self.import_cost_flowed / self.imported)
         if self.purchased:
             costs.append(self.purchased_cost / self.purchased)
 
-        return sum(costs) / len(costs)
+        if costs:
+            return sum(costs) / len(costs)
+        else:
+            return 0
 
     @property
     def consumed(self) -> float:
         """The amount of the item consumed."""
-        return self.flow.consumption
+        if self.flow:
+            return self.flow.consumption
+        else:
+            return 0.0
 
     @property
     def consumption_cost(self) -> float:
@@ -76,7 +82,10 @@ class StorehouseItem:
     @property
     def exported(self) -> int:
         """The amount of the item exported."""
-        return self.flow.export or 0
+        if self.flow:
+            return self.flow.export or 0
+        else:
+            return 0
 
     @property
     def export_value(self) -> float:
@@ -91,7 +100,10 @@ class StorehouseItem:
     @property
     def imported(self) -> int:
         """The amount of the item imported."""
-        return self.flow.imported or 0
+        if self.flow:
+            return self.flow.imported or 0
+        else:
+            return 0
 
     @property
     def import_cost(self) -> float:
@@ -106,7 +118,10 @@ class StorehouseItem:
     @property
     def sold(self) -> int:
         """The amount of the item sold."""
-        return self.flow.sale or 0
+        if self.flow:
+            return self.flow.sale or 0
+        else:
+            return 0
 
     @property
     def sale_value(self) -> float:
@@ -119,22 +134,34 @@ class StorehouseItem:
     @property
     def produced(self) -> float:
         """The amount of the item produced."""
-        return self.flow.production
+        if self.flow:
+            return self.flow.production
+        else:
+            return 0.0
 
     @property
     def production_cost(self) -> float:
         """The cost of producing the item."""
-        return self.flow.production_cost or 0
+        if self.flow:
+            return self.flow.production_cost or 0
+        else:
+            return 0.0
 
     @property
     def purchased(self) -> int:
         """The amount of the item purchased."""
-        return self.flow.purchase or 0
+        if self.flow:
+            return self.flow.purchase or 0
+        else:
+            return 0
 
     @property
     def purchased_cost(self) -> float:
         """The cost of purchasing the item."""
-        if self.flow.purchase:
-            return self.asset.purchase * self.asset.purchase_price
+        if self.flow:
+            if self.flow.purchase:
+                return self.asset.purchase * self.asset.purchase_price
+            else:
+                return 0
         else:
             return 0

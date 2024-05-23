@@ -82,9 +82,7 @@ class Player:
         """The cost of the player's sustenance."""
         total_cost = 0
         for item in self.sustenance_items:
-            volume = self.sustenance_item_consumption(item)
-            cost = self.storehouse.items[item].average_cost
-            total_cost += volume * cost
+            total_cost += self.sustenance_item_cost(item)
 
         return total_cost
 
@@ -96,3 +94,7 @@ class Player:
     def sustenance_item_consumption(self, item: common.Item) -> float:
         """The amount of an item consumed by the player's sustenance."""
         return self.data.household.sustenance.inventory.previous_flows[item].consumption
+
+    def sustenance_item_cost(self, item: common.Item) -> float:
+        """The cost of an item consumed by the player's sustenance."""
+        return self.sustenance_item_consumption(item) * self.storehouse.items[item].average_cost

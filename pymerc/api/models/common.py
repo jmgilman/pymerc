@@ -719,7 +719,7 @@ class Producer(BaseModel):
     limited: bool
     manager: str
     previous_operation: Operation
-    provider_id: int
+    provider_id: Optional[int] = None
     recipe: Recipe
     reference: str
     target: Optional[float] = None
