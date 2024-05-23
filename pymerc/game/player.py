@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING, Optional
 
 from pymerc.api.models.buildings import Building
 from pymerc.api.models import common
+from pymerc.api.models.businesses import Business
+from pymerc.api.models.player import Player
 from pymerc.game.exports import ExportsList, ExportsSummed
 from pymerc.game.imports import ImportsList, ImportsSummed
 from pymerc.game.transport import Transport
@@ -15,8 +17,8 @@ if TYPE_CHECKING:
 class Player:
     """A higher level representation of a player in the game."""
 
-    business: common.Business
-    data: common.Player
+    business: Business
+    data: Player
     exports: ExportsSummed
     imports: ImportsSummed
     transports: list[Transport]
@@ -25,6 +27,7 @@ class Player:
         self._client = client
         self.exports = ExportsSummed()
         self.imports = ImportsSummed()
+        self.storehouse: Optional[Building] = None
 
     async def load(self):
         """Loads the data for the player."""
