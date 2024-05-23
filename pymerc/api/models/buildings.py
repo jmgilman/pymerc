@@ -46,5 +46,5 @@ class BuildingStorage(BaseModel):
 
 
 class BuildingOperation(BaseModel):
-    total_flow: Optional[dict[common.Item, common.InventoryFlow]]
-    operations: Optional[list[common.Operation]]
+    total_flow: Optional[dict[common.Item, common.InventoryFlow]] = None
+    operations: Optional[list[common.Operation]] = None

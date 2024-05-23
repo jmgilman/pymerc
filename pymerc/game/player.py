@@ -23,11 +23,14 @@ class Player:
 
     def __init__(self, client: Client):
         self._client = client
+        self.exports = ExportsSummed()
+        self.imports = ImportsSummed()
 
     async def load(self):
         """Loads the data for the player."""
         self.data = await self._client.player_api.get()
         self.business = await self._client.businesses_api.get(self.data.household.business_ids[0])
+        self.storehouse = await self._client.building(self._get_storehouse_id())
 
         self.transports = []
         for id in self.business.transport_ids:

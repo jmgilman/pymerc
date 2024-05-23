@@ -24,8 +24,8 @@ class Building:
         """Loads the data for the building."""
         self.data = await self._client.buildings_api.get(self.id)
         building_operations = await self._client.buildings_api.get_operations(self.id)
-        self.total_flow = building_operations['total_flow']
-        self.operations = building_operations['operations']
+        self.total_flow = building_operations.total_flow
+        self.operations = building_operations.operations
 
     @property
     def flows(self) -> Optional[dict[common.Item, common.InventoryFlow]]:

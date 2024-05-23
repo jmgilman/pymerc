@@ -294,6 +294,7 @@ class Recipe(Enum):
     Carting2 = "carting 2"
     ChurnButter1 = "churn butter 1"
     ChurnButter2 = "churn butter 2"
+    CogOperations = "cog operations"
     CraftArms1 = "craft arms 1"
     CraftBelts1 = "craft belts 1"
     CraftBelts2 = "craft belts 2"
@@ -374,6 +375,7 @@ class Recipe(Enum):
     GrowHerbs1 = "grow herbs 1"
     GrowHerbs2 = "grow herbs 2"
     HammerNails1 = "hammer nails 1"
+    HandcartOperations = "handcart operations"
     HarnessOx1 = "harness ox 1"
     HarnessOx2a = "harness ox 2a"
     HarnessOx2b = "harness ox 2b"
@@ -521,6 +523,7 @@ class Recipe(Enum):
     SmokingHam2 = "smoking ham 2"
     SmokingMeat1 = "smoking meat 1"
     SmokingMeat2 = "smoking meat 2"
+    SnekkjaOperations = "snekkja operations"
     SpinThread1 = "spin thread 1"
     SpinThread2 = "spin thread 2"
     SpinYarn1 = "spin yarn 1"
@@ -529,6 +532,7 @@ class Recipe(Enum):
     SplitTimber2 = "split timber 2"
     TanHides1 = "tan hides 1"
     TanHides2 = "tan hides 2"
+    TumbrelOperations = "tumbrel operations"
     WeaveCloth1 = "weave cloth 1"
     WeaveCloth2a = "weave cloth 2a"
     WeaveCloth2b = "weave cloth 2b"
@@ -708,10 +712,10 @@ class Operation(BaseModel):
     provision: Optional[float] = None
     reference: Optional[str] = None
     recipe: Optional[Recipe] = None
-    volume = Optional[float] = None
-    tax_rate = Optional[float] = None
-    tax = Optional[float] = None
-    delivery_cost = Optional[DeliveryCost]
+    volume: Optional[float] = None
+    tax_rate: Optional[float] = None
+    tax: Optional[float] = None
+    delivery_cost: Optional[DeliveryCost] = None
     flows: Optional[dict[Item, InventoryFlow]] = None
 
 

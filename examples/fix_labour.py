@@ -19,7 +19,7 @@ async def main():
     player = await client.player()
 
     manager = player.storehouse.inventory.managers.get(Item.Labour)
-    flow = player.storehouse.inventory.previous_flows.get(Item.Labour)
+    flow = player.storehouse.total_flow.get(Item.Labour)
 
     consumed = flow.consumption - flow.production
 
