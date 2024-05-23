@@ -10,6 +10,7 @@ from pymerc.game.town import Town
 if TYPE_CHECKING:
     from pymerc.game.transport import Transport
 
+
 @dataclass
 class Export:
     """A representation of an export in the game."""
@@ -43,6 +44,7 @@ class Export:
         """The volume of the export if it was sold at max volume."""
         return self.manager.buy_volume
 
+
 class Exports(UserDict[common.Item, Export]):
     """A collection of exports for a transport in the game."""
 
@@ -65,6 +67,7 @@ class Exports(UserDict[common.Item, Export]):
     def volume(self) -> int:
         """The total volume of all exports if they were sold at max volume."""
         return sum([exp.volume for exp in self.data.values()])
+
 
 class ExportsList(UserList[Export]):
     """A collection of exports for a transport in the game."""
@@ -97,13 +100,20 @@ class ExportsList(UserList[Export]):
         """Returns the exports for a town by name."""
         return ExportsList([exp for exp in self.data if exp.town.data.name == name])
 
+
 class ExportsSummed(UserDict[common.Item, ExportsList]):
     """A collection of exports for a player in the game."""
 
     @property
     def flowed(self) -> ExportsSummed:
         """The exports that flowed in the last turn."""
-        return ExportsSummed({item: exps for item, exps in self.data.items() if any([exp.flowed for exp in exps])})
+        return ExportsSummed(
+            {
+                item: exps
+                for item, exps in self.data.items()
+                if any([exp.flowed for exp in exps])
+            }
+        )
 
     @property
     def value(self) -> float:
@@ -113,7 +123,9 @@ class ExportsSummed(UserDict[common.Item, ExportsList]):
     @property
     def value_flowed(self) -> float:
         """The total value of all exports that flowed in the last turn."""
-        return sum([sum([exp.value_flowed for exp in exps]) for exps in self.data.values()])
+        return sum(
+            [sum([exp.value_flowed for exp in exps]) for exps in self.data.values()]
+        )
 
     @property
     def volume(self) -> int:
@@ -122,8 +134,20 @@ class ExportsSummed(UserDict[common.Item, ExportsList]):
 
     def by_town_id(self, town_id: int) -> ExportsSummed:
         """Returns the exports for a town by id."""
-        return ExportsSummed({item: exps for item, exps in self.data.items() if exps[0].town.data.id == town_id})
+        return ExportsSummed(
+            {
+                item: exps
+                for item, exps in self.data.items()
+                if exps[0].town.data.id == town_id
+            }
+        )
 
     def by_town_name(self, town_name: str) -> ExportsSummed:
         """Returns the exports for a town by name."""
-        return ExportsSummed({item: exps for item, exps in self.data.items() if exps[0].town.data.name == town_name})
+        return ExportsSummed(
+            {
+                item: exps
+                for item, exps in self.data.items()
+                if exps[0].town.data.name == town_name
+            }
+        )

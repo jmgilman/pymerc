@@ -1,8 +1,8 @@
 import json
 import re
 from typing import Any
-from async_lru import alru_cache
 
+from async_lru import alru_cache
 from pydantic import TypeAdapter
 
 from pymerc.api.base import BaseAPI

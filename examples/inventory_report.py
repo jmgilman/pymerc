@@ -1,20 +1,23 @@
 """
 This example demonstrates how to generate a report of the financial status of a storehouse in a table format.
 """
+
 from __future__ import annotations
 
-from dataclasses import dataclass
-import math
-import os
 import asyncio
+import os
+from dataclasses import dataclass
+
 from dotenv import load_dotenv
+from tabulate import tabulate
+
 from pymerc.api.models.common import Item, Transport
 from pymerc.client import Client
 from pymerc.game.player import Player
-from tabulate import tabulate
 
 # Load the API_USER and API_TOKEN from the environment
 load_dotenv()
+
 
 @dataclass
 class ItemReport:
@@ -27,30 +30,43 @@ class ItemReport:
     export: float = 0
     sale: float = 0
 
+
 async def main():
     client = Client(os.environ["API_USER"], os.environ["API_TOKEN"])
     player = await client.player()
 
     table = []
-    headers = ["Item", "Imported", "Production", "Purchase", "Consumption", "Export", "Sale", "Balance"]
+    headers = [
+        "Item",
+        "Imported",
+        "Production",
+        "Purchase",
+        "Consumption",
+        "Export",
+        "Sale",
+        "Balance",
+    ]
 
     for item in player.storehouse.items:
         if item.value in Transport:
             continue
 
         report = generate_report(player, item)
-        table.append([
-            item.name,
-            report.imported,
-            report.production,
-            report.purchase,
-            report.consumption,
-            report.export,
-            report.sale,
-            report.balance
-        ])
+        table.append(
+            [
+                item.name,
+                report.imported,
+                report.production,
+                report.purchase,
+                report.consumption,
+                report.export,
+                report.sale,
+                report.balance,
+            ]
+        )
 
     print(tabulate(table, headers, floatfmt=".2f"))
+
 
 def generate_report(player: Player, target_item: Item) -> ItemReport:
     report = ItemReport(target_item)
@@ -89,6 +105,7 @@ def generate_report(player: Player, target_item: Item) -> ItemReport:
 
     report.balance = round(output - input, 2)
     return report
+
 
 if __name__ == "__main__":
     asyncio.run(main())

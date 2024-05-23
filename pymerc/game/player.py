@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from pymerc.api.models import common, businesses
 from pymerc.api.models.player import Household, Sustenance
@@ -33,7 +33,9 @@ class Player:
     async def load(self):
         """Loads the data for the player."""
         self.data = await self._client.player_api.get()
-        self.business = await self._client.businesses_api.get(self.data.household.business_ids[0])
+        self.business = await self._client.businesses_api.get(
+            self.data.household.business_ids[0]
+        )
 
         for id in self.business.building_ids:
             self.buildings.append(await self._client.building(id))
@@ -98,4 +100,7 @@ class Player:
 
     def sustenance_item_cost(self, item: common.Item) -> float:
         """The cost of an item consumed by the player's sustenance."""
-        return self.sustenance_item_consumption(item) * self.storehouse.items[item].average_cost
+        return (
+            self.sustenance_item_consumption(item)
+            * self.storehouse.items[item].average_cost
+        )

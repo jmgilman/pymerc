@@ -1,4 +1,3 @@
-from pydantic import TypeAdapter
 
 from pymerc.api.base import BaseAPI
 from pymerc.api.models import businesses

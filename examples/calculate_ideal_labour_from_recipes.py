@@ -1,5 +1,6 @@
-import os
 import asyncio
+import os
+
 from dotenv import load_dotenv
 
 from pymerc.client import Client
@@ -20,12 +21,14 @@ async def calculate_ideal_labor_for_player_buildings():
         if building.production:
             labor_required = await building.calculate_current_labor_need()
             print(
-                f"Building ID: {building.id}, Type: {building.type}, Recipe: {building.production.recipe.value}, Labor Required: {labor_required}")
+                f"Building ID: {building.id}, Type: {building.type}, Recipe: {building.production.recipe.value}, Labor Required: {labor_required}"
+            )
             total_labor += labor_required
 
     print(f"Total labor required for all buildings: {total_labor}")
 
     await client.close()
+
 
 if __name__ == "__main__":
     asyncio.run(calculate_ideal_labor_for_player_buildings())

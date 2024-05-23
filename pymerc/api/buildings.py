@@ -1,10 +1,10 @@
-from pydantic import TypeAdapter
 
 from pymerc.api.base import BaseAPI
 from pymerc.api.models import buildings, common
 from pymerc.util import data
 
 BASE_URL = "https://play.mercatorio.io/api/buildings/"
+
 
 class BuildingsAPI(BaseAPI):
     """A class for interacting with the buildings API endpoint."""
@@ -33,7 +33,9 @@ class BuildingsAPI(BaseAPI):
         response = await self.client.get(f"{BASE_URL}{id}/operations")
         return buildings.BuildingOperation.model_validate(response.json())
 
-    async def set_manager(self, id: int, item: common.Item, manager: common.InventoryManager) -> bool:
+    async def set_manager(
+        self, id: int, item: common.Item, manager: common.InventoryManager
+    ) -> bool:
         """Set the manager for an item in a building.
 
         Args:
@@ -44,5 +46,7 @@ class BuildingsAPI(BaseAPI):
             bool: Whether the manager was set.
         """
         json = data.convert_floats_to_strings(manager.model_dump(exclude_unset=True))
-        response = await self.client.patch(f"{BASE_URL}{id}/storage/inventory/{item.name.lower()}", json=json)
+        response = await self.client.patch(
+            f"{BASE_URL}{id}/storage/inventory/{item.name.lower()}", json=json
+        )
         return response.status_code == 200
