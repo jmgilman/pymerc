@@ -4,10 +4,10 @@ from typing import TYPE_CHECKING, Optional
 
 from pymerc.api.models import common
 from pymerc.api.models.buildings import Building as BuildingModel
+from pymerc.game.recipe import Recipe
 
 if TYPE_CHECKING:
     from pymerc.client import Client
-    from pymerc.game.recipe_manager import RecipeManager
 
 
 class Building:
@@ -82,7 +82,7 @@ class Building:
         return self.data.size if self.data else None
 
     @property
-    def target(self) -> Optional[float]:
+    def target_production(self) -> Optional[float]:
         """Returns the production target of the building."""
         return self.production.target if self.production and self.production.target else 0.0
 
@@ -160,15 +160,12 @@ class Building:
         Returns:
             float: The labor required for the target multiplier.
         """
-        from pymerc.game.recipe_manager import RecipeManager
-        recipe_manager = RecipeManager.get_instance(self._client)
-        await recipe_manager.load_recipes()
-
         if self.production:
-            recipe = recipe_manager.get_recipe(self.production.recipe.value)
+            recipe = Recipe(self._client, self.production.recipe.value)
+            await recipe.load()
             if recipe:
                 if self.items:
-                        inventory_assets = self.items
+                    inventory_assets = self.items
                 elif self.data and self.data.producer:
                     inventory_assets = self.data.producer.inventory.account.assets
                 else:
@@ -180,6 +177,6 @@ class Building:
                 else:
                     inventory_managers = []
 
-                return recipe.calculate_target_labor(self.target, inventory_assets, inventory_managers)
+                return recipe.calculate_target_labor(self.target_production, inventory_assets, inventory_managers)
 
         return 0.0

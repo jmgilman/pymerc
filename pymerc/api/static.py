@@ -1,6 +1,7 @@
 import json
 import re
 from typing import Any
+from async_lru import alru_cache
 
 from pydantic import TypeAdapter
 
@@ -14,6 +15,7 @@ ROOT_URL = "https://play.mercatorio.io/"
 class StaticAPI(BaseAPI):
     """A class for interacting with the static data from the game."""
 
+    @alru_cache(maxsize=32)
     async def get_buildings(self) -> list[static.Building]:
         """Get the buildings from the game.
 
@@ -25,6 +27,7 @@ class StaticAPI(BaseAPI):
         type_adapter = TypeAdapter(list[static.Building])
         return type_adapter.validate_python(data["Gm"])
 
+    @alru_cache(maxsize=32)
     async def get_items(self) -> list[static.Item]:
         """Get the items from the game.
 
@@ -36,6 +39,7 @@ class StaticAPI(BaseAPI):
         type_adapter = TypeAdapter(list[static.Item])
         return type_adapter.validate_python(data["RB"])
 
+    @alru_cache(maxsize=32)
     async def get_recipes(self) -> list[static.Recipe]:
         """Get the recipes from the game.
 
@@ -46,6 +50,7 @@ class StaticAPI(BaseAPI):
         type_adapter = TypeAdapter(list[static.Recipe])
         return type_adapter.validate_python(data["F_"])
 
+    @alru_cache(maxsize=32)
     async def get_transport(self) -> list[static.Transport]:
         """Get the transport from the game.
 
@@ -57,6 +62,7 @@ class StaticAPI(BaseAPI):
         type_adapter = TypeAdapter(list[static.Transport])
         return type_adapter.validate_python(data["g$"])
 
+    @alru_cache(maxsize=32)
     async def _get(self) -> Any:
         """Get the static data from the game.
 
