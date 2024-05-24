@@ -35,12 +35,12 @@ class Recipe:
     @property
     def outputs(self) -> list[Ingredient]:
         """The flows of the storehouse."""
-        return self.data.flows
+        return self.data.outputs
 
     @property
     def inputs(self) -> list[Ingredient]:
         """The flows of the storehouse."""
-        return self.data.flows
+        return self.data.inputs
 
     def calculate_target_labor(
         self,
