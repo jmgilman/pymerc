@@ -69,6 +69,35 @@ class Town:
         """The total taxes collected by the town."""
         return sum(self.data.government.taxes_collected.__dict__.values())
 
+    async def buy(
+        self,
+        item: common.Item,
+        expected_balance: int,
+        operation: str,
+        volume: int,
+        price: float,
+    ) -> common.ItemTradeResult:
+        """Place a buy order for an item in the town.
+
+        Args:
+            item (Item): The item to buy.
+            expected_balance (int): The expected balance before the purchase.
+            operation (str): The operation to use for the purchase.
+            volume (int): The volume to buy.
+            price (float): The price to buy at.
+
+        Returns:
+            ItemTradeResult: The result of the buy order.
+        """
+        return await self._client.towns_api.send_buy_order(
+            item=item,
+            id=self.id,
+            expected_balance=expected_balance,
+            operation=operation,
+            price=price,
+            volume=volume,
+        )
+
     async def fetch_market_item(
         self, item: common.Item
     ) -> models.TownMarketItemDetails:
@@ -92,3 +121,32 @@ class Town:
             Optional[TownMarketItem]: The item, if found
         """
         return self._market.markets.get(item)
+
+    async def sell(
+        self,
+        item: common.Item,
+        expected_balance: int,
+        operation: str,
+        volume: int,
+        price: float,
+    ) -> common.ItemTradeResult:
+        """Place a sell order for an item in the town.
+
+        Args:
+            item (Item): The item to sell.
+            expected_balance (int): The expected balance before the sale.
+            operation (str): The operation to use for the sale.
+            volume (int): The volume to sell.
+            price (float): The price to sell at.
+
+        Returns:
+            ItemTradeResult: The result of the sell order.
+        """
+        return await self._client.towns_api.send_sell_order(
+            item=item,
+            id=self.id,
+            expected_balance=expected_balance,
+            operation=operation,
+            price=price,
+            volume=volume,
+        )

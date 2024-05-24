@@ -147,17 +147,36 @@ class Building:
         else:
             return None
 
-    def set_manager(self, item: common.Item, manager: common.InventoryManager) -> bool:
+    async def patch_manager(self, item: common.Item, **kwargs):
+        """Patch the manager for an item in the building.
+
+        Args:
+            item (Item): The item.
+            **kwargs: The manager data to patch.
+
+        Raises:
+            SetManagerFailedException: If the manager could not be patched.
+        """
+        if item not in self.data.storage.inventory.managers:
+            raise ValueError(f"Item {item} does not have a manager.")
+
+        manager = self.data.storage.inventory.managers[item]
+        for key, value in kwargs.items():
+            setattr(manager, key, value)
+
+        self = await self._client.buildings_api.set_manager(self.id, item, manager)
+
+    async def set_manager(self, item: common.Item, manager: common.InventoryManager):
         """Set the manager for an item in the building.
 
         Args:
             item (Item): The item.
             manager (InventoryManager): The manager.
 
-        Returns:
-            bool: Whether the manager was set.
+        Raises:
+            SetManagerFailedException: If the manager could not be set.
         """
-        return self._client.buildings_api.set_manager(self.id, item, manager)
+        self = await self._client.buildings_api.set_manager(self.id, item, manager)
 
     async def calculate_current_labor_need(self) -> float:
         """Calculates the current labor need based on the building's production recipe.

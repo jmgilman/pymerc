@@ -1,6 +1,6 @@
-
 from pymerc.api.base import BaseAPI
 from pymerc.api.models import buildings, common
+from pymerc.exceptions import SetManagerFailedException
 from pymerc.util import data
 
 BASE_URL = "https://play.mercatorio.io/api/buildings/"
@@ -35,7 +35,7 @@ class BuildingsAPI(BaseAPI):
 
     async def set_manager(
         self, id: int, item: common.Item, manager: common.InventoryManager
-    ) -> bool:
+    ) -> buildings.Building:
         """Set the manager for an item in a building.
 
         Args:
@@ -43,10 +43,18 @@ class BuildingsAPI(BaseAPI):
             manager (InventoryManager): The manager.
 
         Returns:
-            bool: Whether the manager was set.
+            Building: The updated building.
         """
         json = data.convert_floats_to_strings(manager.model_dump(exclude_unset=True))
         response = await self.client.patch(
-            f"{BASE_URL}{id}/storage/inventory/{item.name.lower()}", json=json
+            f"{BASE_URL}{id}/storage/inventory/{item.value}", json=json
         )
-        return response.status_code == 200
+
+        if response.status_code == 200:
+            return buildings.Building.model_validate(
+                response.json()["_embedded"][f"/buildings/{id}"]
+            )
+
+        raise SetManagerFailedException(
+            f"Failed to set manager for {item.name} on building {id}: {response.text}"
+        )

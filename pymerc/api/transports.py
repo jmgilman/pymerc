@@ -1,5 +1,6 @@
 from pymerc.api.base import BaseAPI
 from pymerc.api.models import common, transports
+from pymerc.exceptions import SetManagerFailedException
 from pymerc.util import data
 
 BASE_URL = "https://play.mercatorio.io/api/transports"
@@ -22,7 +23,7 @@ class TransportsAPI(BaseAPI):
 
     async def set_manager(
         self, id: int, item: common.Item, manager: common.InventoryManager
-    ):
+    ) -> transports.TransportRoute:
         """Sets the manager for the item.
 
         Args:
@@ -32,6 +33,11 @@ class TransportsAPI(BaseAPI):
         """
         json = data.convert_floats_to_strings(manager.model_dump(exclude_unset=True))
         response = await self.client.patch(
-            f"{BASE_URL}{id}/route/inventory/{item.name.lower()}", json=json
+            f"{BASE_URL}/{id}/route/inventory/{item.value}", json=json
         )
-        return response.status_code == 200
+        if response.status_code == 200:
+            return transports.TransportRoute.model_validate(response.json())
+
+        raise SetManagerFailedException(
+            f"Failed to set manager for {item.name} on transport {id}: {response.text}"
+        )

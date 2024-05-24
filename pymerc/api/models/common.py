@@ -771,6 +771,10 @@ class ItemTradeResult(BaseModel):
 
     settlements: Optional[list[ItemTradeSettlement]] = None
     order_id: Optional[int] = None
+    embedded: Optional[dict] = Field(alias="_embedded", default_factory=dict)
+
+    class Config:
+        arbitrary_types_allowed = True
 
 
 class ItemTradeSettlement(BaseModel):

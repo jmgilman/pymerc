@@ -4,6 +4,7 @@ from pydantic import TypeAdapter
 
 from pymerc.api.base import BaseAPI
 from pymerc.api.models import common, towns
+from pymerc.exceptions import BuySellOrderFailedException
 from pymerc.util import data
 
 BASE_URL = "https://play.mercatorio.io/api/towns"
@@ -60,6 +61,35 @@ class TownsAPI(BaseAPI):
         response = await self.client.get(f"{BASE_URL}/{town_id}/markets/{item.value}")
         return towns.TownMarketItemDetails.model_validate(response.json())
 
+    async def send_buy_order(
+        self,
+        item: common.Item,
+        id: int,
+        expected_balance: int,
+        operation: str,
+        price: float,
+        volume: int,
+    ) -> common.ItemTradeResult:
+        """Send a buy order to a town.
+
+        Args:
+            item (Item): The item to buy
+            id (int): The ID of the town
+            expected_balance (int): The expected balance after the purchase
+            operation (str): The operation to use for the purchase
+            price (float): The price of the item
+            volume (int): The volume of the item to buy
+
+        Returns:
+            ItemTradeResult: The result of the purchase
+
+        Raises:
+            BuySellOrderFailedException: If the order failed to send
+        """
+        return await self._send_order(
+            item, id, expected_balance, operation, price, volume, "bid"
+        )
+
     async def send_sell_order(
         self,
         item: common.Item,
@@ -80,10 +110,44 @@ class TownsAPI(BaseAPI):
             volume (int): The volume of the item to sell
 
         Returns:
-            bool: Whether the order was successfully sent
+            ItemTradeResult: The result of the sale
+
+        Raises:
+            BuySellOrderFailedException: If the order failed to send
+        """
+        return await self._send_order(
+            item, id, expected_balance, operation, price, volume, "ask"
+        )
+
+    async def _send_order(
+        self,
+        item: common.Item,
+        id: int,
+        expected_balance: int,
+        operation: str,
+        price: float,
+        volume: int,
+        direction: str,
+    ) -> common.ItemTradeResult:
+        """Send a buy or sell order to a town.
+
+        Args:
+            item (Item): The item to buy or sell
+            id (int): The ID of the town
+            expected_balance (int): The expected balance after the trade
+            operation (str): The operation to use for the trade
+            price (float): The price of the item
+            volume (int): The volume of the item to trade
+            direction (str): The direction of the trade
+
+        Returns:
+            ItemTradeResult: The result of the trade
+
+        Raises:
+            BuySellOrderFailedException: If the order failed to send
         """
         trade = common.ItemTrade(
-            direction="ask",
+            direction=direction,
             expected_balance=expected_balance,
             operation=operation,
             price=price,
@@ -97,4 +161,6 @@ class TownsAPI(BaseAPI):
         if response.status_code == 200:
             return common.ItemTradeResult.model_validate(response.json())
         else:
-            raise ValueError(f"Failed to send sell order: {response.text}")
+            raise BuySellOrderFailedException(
+                f"Failed to send {direction} order: {response.text}"
+            )

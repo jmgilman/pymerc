@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Optional
 
 from pymerc.api.models import common
 from pymerc.api.models.towns import TownMarket, TownMarketItemDetails
+from pymerc.api.models.transports import TransportRoute
 from pymerc.game.exports import Export, Exports
 from pymerc.game.imports import Import, Imports
 from pymerc.game.town import Town
@@ -36,7 +37,7 @@ class Transport:
         if self.data.route:
             self.town = await self._client.town(self.data.route.remote_town)
 
-        await self._load_imports_exports()
+        self._load_imports_exports()
 
     @property
     def docked(self) -> bool:
@@ -57,7 +58,7 @@ class Transport:
             return None
 
     @property
-    def route(self) -> common.Inventory:
+    def route(self) -> TransportRoute:
         """The route of the transport."""
         return self.data.route
 
@@ -72,7 +73,96 @@ class Transport:
         """
         return self.data.route.account.assets.get(item, None)
 
-    async def sell(self, item: common.Item, volume: int, price: float) -> bool:
+    async def buy(
+        self, item: common.Item, volume: int, price: float
+    ) -> common.ItemTradeResult:
+        """Place a buy order for an item in the transport's town.
+
+        Args:
+            item (Item): The item to buy.
+            volume (int): The volume to buy.
+            price (float): The price to buy at.
+
+        Returns:
+            ItemTradeResult: The result of the buy order.
+        """
+        if not self.docked:
+            raise ValueError("The transport must be docked to buy an item.")
+
+        expected_balance = self.player.storehouse.items[item].balance
+        result = await self.town.buy(
+            item, expected_balance, f"route/{self.id}", volume, price
+        )
+
+        self.player.storehouse.update_account(
+            common.InventoryAccount.model_validate(
+                result.embedded[f"/accounts/{self.data.route.account.id}"]
+            )
+        )
+
+        return result
+
+    async def export_item(self, item: common.Item, volume: int, price: float):
+        """Exports an item from the transport.
+
+        Args:
+            item (Item): The item to export.
+            volume (int): The volume to export.
+            price (float): The price to export at.
+        """
+        if not self.docked:
+            raise ValueError("The transport must be docked to export an item.")
+
+        manager = common.InventoryManager(
+            sell_volume=volume,
+            sell_price=price,
+        )
+        await self.set_manager(item, manager)
+
+    async def import_item(self, item: common.Item, volume: int, price: float):
+        """Imports an item to the transport.
+
+        Args:
+            item (Item): The item to import.
+            volume (int): The volume to import.
+            price (float): The price to import at.
+        """
+        if not self.docked:
+            raise ValueError("The transport must be docked to import an item.")
+
+        manager = common.InventoryManager(
+            buy_volume=volume,
+            buy_price=price,
+        )
+        await self.set_manager(item, manager)
+
+    async def patch_manager(self, item: common.Item, **kwargs):
+        """Patches the manager for the item.
+
+        Args:
+            item (Item): The item to patch the manager for.
+            **kwargs: The fields to patch.
+
+        Raises:
+            SetManagerFailedException: If the manager could not be patched.
+        """
+        if not self.docked:
+            raise ValueError("The transport must be docked to patch a manager.")
+
+        if item not in self.data.route.managers:
+            raise ValueError("The item does not have a manager.")
+
+        manager = self.data.route.managers[item]
+        for key, value in kwargs.items():
+            setattr(manager, key, value)
+
+        self.update_route(
+            await self._client.transports_api.set_manager(self.id, item, manager)
+        )
+
+    async def sell(
+        self, item: common.Item, volume: int, price: float
+    ) -> common.ItemTradeResult:
         """Place a sell order for an item in the transport's town.
 
         Args:
@@ -81,43 +171,64 @@ class Transport:
             price (float): The price to sell at.
 
         Returns:
-            bool: Whether the sell order was placed
+            ItemTradeResult: The result of the sell order.
         """
         if not self.docked:
             raise ValueError("The transport must be docked to sell an item.")
 
         expected_balance = self.player.storehouse.items[item].balance
-        return await self._client.towns_api.send_sell_order(
-            item, self.town.id, expected_balance, f"route/{self.id}", price, volume
+        result = await self.town.sell(
+            item, expected_balance, f"route/{self.id}", volume, price
         )
 
-    async def set_manager(
-        self, item: common.Item, manager: common.InventoryManager
-    ) -> bool:
+        self.player.storehouse.update_account(
+            common.InventoryAccount.model_validate(
+                result.embedded[f"/accounts/{self.data.route.account.id}"]
+            )
+        )
+
+        return result
+
+    async def set_manager(self, item: common.Item, manager: common.InventoryManager):
         """Sets the manager for the item.
 
         Args:
             item (Item): The item to set the manager for.
             manager (InventoryManager): The manager to set.
 
-        Returns:
-            bool: Whether the manager was set.
+        Raises:
+            SetManagerFailedException: If the manager could not be set.
         """
         if not self.docked:
             raise ValueError("The transport must be docked to set a manager.")
 
-        return await self._client.transports_api.set_manager(self.id, item, manager)
+        self.update_route(
+            await self._client.transports_api.set_manager(self.id, item, manager)
+        )
 
-    async def _load_imports_exports(self):
+    def update_route(self, route: TransportRoute):
+        """Updates the route of the transport.
+
+        Args:
+            route (TransportRoute): The new route data.
+        """
+        self.data.route = route
+        self._load_imports_exports()
+
+    def _load_imports_exports(self):
         """Loads the imports and exports for the transport."""
         if self.docked:
             for item, manager in self.route.managers.items():
                 asset = self.route.account.assets[item]
                 flow = self.data.route.current_flows[item]
                 if manager.buy_volume:
-                    self.imports[item] = Import(asset, flow, manager, self.town, self)
+                    self.imports[item] = Import(
+                        asset, flow, item, manager, self.town, self
+                    )
                 if manager.sell_volume:
-                    self.exports[item] = Export(asset, flow, manager, self.town, self)
+                    self.exports[item] = Export(
+                        asset, flow, item, manager, self.town, self
+                    )
 
 
 class TransportList(UserList[Transport]):
