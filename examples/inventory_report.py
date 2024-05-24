@@ -29,6 +29,8 @@ class ItemReport:
     consumption: float = 0
     export: float = 0
     sale: float = 0
+    expenses: float = 0
+    revenue: float = 0
 
 
 async def main():
@@ -44,14 +46,18 @@ async def main():
         "Consumption",
         "Export",
         "Sale",
+        "Expenses",
+        "Revenue",
         "Balance",
     ]
 
+    reports = []
     for item in player.storehouse.items:
         if item.value in Transport:
             continue
 
         report = generate_report(player, item)
+        reports.append(report)
         table.append(
             [
                 item.name,
@@ -61,11 +67,16 @@ async def main():
                 report.consumption,
                 report.export,
                 report.sale,
+                report.expenses,
+                report.revenue,
                 report.balance,
             ]
         )
 
     print(tabulate(table, headers, floatfmt=".2f"))
+    print("Total expenses:", sum([report.expenses for report in reports]))
+    print("Total revenue:", sum([report.revenue for report in reports]))
+    print("Total balance:", sum([report.balance for report in reports]))
 
 
 def generate_report(player: Player, target_item: Item) -> ItemReport:
@@ -103,6 +114,8 @@ def generate_report(player: Player, target_item: Item) -> ItemReport:
         output += item.sale_value
         report.sale = item.sale_value
 
+    report.expenses = 0 - input
+    report.revenue = output
     report.balance = round(output - input, 2)
     return report
 

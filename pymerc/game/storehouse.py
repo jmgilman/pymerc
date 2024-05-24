@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from pymerc.api.models import common
 from pymerc.game.building import Building
@@ -39,8 +39,23 @@ class Storehouse:
                 exports=self.player.exports.get(item, ExportsList()),
                 imports=self.player.imports.get(item, ImportsList()),
                 manager=self.data.inventory.managers.get(item, None),
-                flow=self.data.inventory.previous_flows.get(item, None),
+                flow=self.flows.get(item, None),
             )
+
+    @property
+    def flows(self) -> dict[common.Item, common.InventoryFlow]:
+        """The flows of the storehouse."""
+        return self.data.flows
+
+    @property
+    def operations(self) -> Optional[list[common.Operation]]:
+        """The operations of the storehouse."""
+        return self.data.operations
+
+    @property
+    def previous_flows(self) -> dict[common.Item, common.InventoryFlow]:
+        """The previous flows of the storehouse."""
+        return self.data.previous_flows
 
 
 @dataclass
@@ -56,18 +71,29 @@ class StorehouseItem:
     @property
     def average_cost(self) -> float:
         """The average cost of the item across production, imports, and purchases."""
-        costs = []
+        total_cost = 0
+        total_volume = 0
         if self.produced:
-            costs.append(self.production_cost / self.produced)
+            total_cost += self.production_cost
+            total_volume += self.produced
         if self.imported:
-            costs.append(self.import_cost_flowed / self.imported)
+            total_cost += self.import_cost_flowed
+            total_volume += self.imported
         if self.purchased:
-            costs.append(self.purchased_cost / self.purchased)
+            total_cost += self.purchased_cost
+            total_volume += self.purchased
 
-        if costs:
-            return sum(costs) / len(costs)
-        else:
-            return 0
+        return total_cost / total_volume if total_volume else 0
+
+    @property
+    def balance(self) -> int:
+        """The current balance of the item."""
+        return self.asset.balance
+
+    @property
+    def capacity(self) -> int:
+        """The maximum capacity of the item."""
+        return self.asset.capacity
 
     @property
     def consumed(self) -> float:

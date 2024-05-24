@@ -14,35 +14,21 @@ if TYPE_CHECKING:
 class Building:
     """A higher level representation of a building in the game."""
 
+    data: BuildingModel
+
     def __init__(self, client: Client, id: int):
         self._client = client
         self.id = id
-        self.data: Optional[BuildingModel] = None
-        self.total_flow: Optional[dict[common.Item, common.InventoryFlow]] = None
-        self.operations: Optional[list[common.Operation]] = None
 
     async def load(self):
         """Loads the data for the building."""
         self.data = await self._client.buildings_api.get(self.id)
-        building_operations = await self._client.buildings_api.get_operations(self.id)
-        self.total_flow = building_operations.total_flow
-        self.operations = building_operations.operations
+        self.operations_data = await self._client.buildings_api.get_operations(self.id)
 
     @property
     def flows(self) -> Optional[dict[common.Item, common.InventoryFlow]]:
         """The flows of the building."""
-        if self.total_flow:
-            return self.total_flow
-        else:
-            return None
-
-    @property
-    def previous_flows(self) -> Optional[dict[common.Item, common.InventoryFlow]]:
-        """The flows of the building."""
-        if self.data.storage:
-            return self.data.storage.inventory.previous_flows
-        else:
-            return None
+        return self.operations_data.total_flow
 
     @property
     def inventory(self) -> Optional[common.Inventory]:
@@ -63,6 +49,19 @@ class Building:
     def managers(self) -> dict[common.Item, common.InventoryManager]:
         """The managers of the building."""
         return self.data.storage.inventory.managers
+
+    @property
+    def operations(self) -> Optional[list[common.Operation]]:
+        """The operations of the building."""
+        return self.operations_data.operations
+
+    @property
+    def previous_flows(self) -> Optional[dict[common.Item, common.InventoryFlow]]:
+        """The flows of the building."""
+        if self.data.storage:
+            return self.data.storage.inventory.previous_flows
+        else:
+            return None
 
     @property
     def production(self) -> Optional[common.Producer]:
