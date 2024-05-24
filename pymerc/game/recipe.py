@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
 from pymerc.api.models.common import InventoryAccountAsset, InventoryManager, Item
-from pymerc.api.models.static import Recipe as RecipeModel
+from pymerc.api.models.static import Recipe as RecipeModel, Ingredient
 
 if TYPE_CHECKING:
     from pymerc.client import Client
@@ -31,6 +31,16 @@ class Recipe:
             if input_ingredient.product == Item.Labour:
                 return input_ingredient.amount
         return 0.0
+
+    @property
+    def outputs(self) -> list[Ingredient]:
+        """The flows of the storehouse."""
+        return self.data.flows
+
+    @property
+    def inputs(self) -> list[Ingredient]:
+        """The flows of the storehouse."""
+        return self.data.flows
 
     def calculate_target_labor(
         self,
