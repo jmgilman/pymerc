@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from typing import TYPE_CHECKING
 
 from pymerc.api.models import common, businesses
@@ -8,6 +9,7 @@ from pymerc.api.models.player import Player as PlayerModel
 from pymerc.game.building import BuildingsList
 from pymerc.game.exports import ExportsList, ExportsSummed
 from pymerc.game.imports import ImportsList, ImportsSummed
+from pymerc.game.town import Town
 from pymerc.game.transport import Transport
 
 if TYPE_CHECKING:
@@ -22,28 +24,34 @@ class Player:
     data: PlayerModel
     exports: ExportsSummed
     imports: ImportsSummed
+    town: Town
     transports: list[Transport]
 
     def __init__(self, client: Client):
         self._client = client
-        self.buildings = BuildingsList()
         self.exports = ExportsSummed()
         self.imports = ImportsSummed()
 
     async def load(self):
         """Loads the data for the player."""
+        tasks = []
+
         self.data = await self._client.player_api.get()
         self.business = await self._client.businesses_api.get(
             self.data.household.business_ids[0]
         )
+        self.town = await self._client.town(self.data.household.town_id)
 
+        tasks = []
         for id in self.business.building_ids:
-            self.buildings.append(await self._client.building(id))
+            tasks.append(self._client.building(id))
+        self.buildings = BuildingsList(await asyncio.gather(*tasks))
 
-        self.transports = []
+        tasks = []
         if self.business.transport_ids:
             for id in self.business.transport_ids:
-                self.transports.append(await self._client.transport(id))
+                tasks.append(self._client.transport(id))
+        self.transports = await asyncio.gather(*tasks)
 
         for transport in self.transports:
             for item, exp in transport.exports.items():
