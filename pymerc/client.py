@@ -173,16 +173,17 @@ class Client:
             tasks.append(self.town(town.id))
         return await asyncio.gather(*tasks)
 
-    async def transport(self, id: int) -> Transport:
+    async def transport(self, player: Player, id: int) -> Transport:
         """Get a transport by its ID.
 
         Args:
             id (int): The ID of the transport.
+            player (Player): The player.
 
         Returns:
             Transport: The transport with the given ID.
         """
-        t = Transport(self, id)
+        t = Transport(self, player, id)
         await t.load()
 
         return t

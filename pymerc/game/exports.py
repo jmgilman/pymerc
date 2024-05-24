@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from pymerc.api.models import common
+from pymerc.api.models.towns import TownMarketItem, TownMarketItemDetails
 from pymerc.game.town import Town
 
 if TYPE_CHECKING:
@@ -17,9 +18,15 @@ class Export:
 
     asset: common.InventoryAccountAsset
     flow: common.InventoryFlow
+    item: common.Item
     manager: common.InventoryManager
     town: Town
     transport: Transport
+
+    @property
+    def market_data(self) -> TownMarketItem:
+        """The market data for the export."""
+        return self.town.market[self.item]
 
     @property
     def flowed(self) -> int:
@@ -42,7 +49,36 @@ class Export:
     @property
     def volume(self) -> int:
         """The volume of the export if it was sold at max volume."""
-        return self.manager.buy_volume
+        return self.manager.sell_volume
+
+    @property
+    def volume_flowed(self) -> int:
+        """The volume of the export that flowed in the last turn."""
+        return self.flow.exported or 0
+
+    async def fetch_market_details(self) -> TownMarketItemDetails:
+        """Fetches the market details for the export."""
+        return await self.town.fetch_market_item(self.item)
+
+    async def sell(self, volume: int, price: float) -> common.ItemTradeResult:
+        """Places a sell order against the export.
+
+        Args:
+            volume: The volume to sell.
+            price: The price to sell at
+
+        Returns:
+            ItemTradeResult: The result of the sell order.
+        """
+        await self.transport.sell(self.item, volume, price)
+
+    async def patch_manager(self, **kwargs):
+        """Patches the export's manager
+
+        Args:
+            **kwargs: The fields to patch.
+        """
+        await self.transport.patch_manager(self.item, **kwargs)
 
 
 class Exports(UserDict[common.Item, Export]):
@@ -68,6 +104,11 @@ class Exports(UserDict[common.Item, Export]):
         """The total volume of all exports if they were sold at max volume."""
         return sum([exp.volume for exp in self.data.values()])
 
+    @property
+    def volume_flowed(self) -> int:
+        """The total volume of all exports that flowed in the last turn."""
+        return sum([exp.volume_flowed for exp in self.data.values()])
+
 
 class ExportsList(UserList[Export]):
     """A collection of exports for a transport in the game."""
@@ -91,6 +132,11 @@ class ExportsList(UserList[Export]):
     def volume(self) -> int:
         """The total volume of all exports if they were sold at max volume."""
         return sum([exp.volume for exp in self.data])
+
+    @property
+    def volume_flowed(self) -> int:
+        """The total volume of all exports that flowed in the last turn."""
+        return sum([exp.volume_flowed for exp in self.data])
 
     def by_town_id(self, id: int) -> ExportsList:
         """Returns the exports for a town by id."""
@@ -131,6 +177,13 @@ class ExportsSummed(UserDict[common.Item, ExportsList]):
     def volume(self) -> int:
         """The total volume of all exports if they were sold at max volume."""
         return sum([sum([exp.volume for exp in exps]) for exps in self.data.values()])
+
+    @property
+    def volume_flowed(self) -> int:
+        """The total volume of all exports that flowed in the last turn."""
+        return sum(
+            [sum([exp.volume_flowed for exp in exps]) for exps in self.data.values()]
+        )
 
     def by_town_id(self, town_id: int) -> ExportsSummed:
         """Returns the exports for a town by id."""

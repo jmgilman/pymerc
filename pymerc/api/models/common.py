@@ -754,3 +754,31 @@ class Producer(BaseModel):
     recipe: Recipe
     reference: str
     target: Optional[float] = None
+
+
+class ItemTrade(BaseModel):
+    """Data for buying/selling an item."""
+
+    direction: str
+    expected_balance: float
+    operation: str
+    price: float
+    volume: int
+
+
+class ItemTradeResult(BaseModel):
+    """Result of buying/selling an item."""
+
+    settlements: Optional[list[ItemTradeSettlement]] = None
+    order_id: Optional[int] = None
+    embedded: Optional[dict] = Field(alias="_embedded", default_factory=dict)
+
+    class Config:
+        arbitrary_types_allowed = True
+
+
+class ItemTradeSettlement(BaseModel):
+    """Settlement of an item trade."""
+
+    volume: int
+    price: float

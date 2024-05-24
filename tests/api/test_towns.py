@@ -1,5 +1,7 @@
 import pytest
 
+from pymerc.api.models.common import Item
+
 
 @pytest.mark.asyncio
 async def test_all(client):
@@ -30,5 +32,5 @@ async def test_get_market_item_overview(subtests, client):
     towns = await client.towns_api.get_all()
     for town in towns:
         with subtests.test(f"Testing data for town {town.name}", i=town.id):
-            data = await client.towns_api.get_market_item(town.id, "arms")
+            data = await client.towns_api.get_market_item(town.id, Item.Arms)
             assert data is not None
