@@ -4,13 +4,14 @@ from collections import UserList
 from typing import TYPE_CHECKING, Optional
 
 from pymerc.api.models import common
-from pymerc.api.models.towns import TownMarketItemDetails
+from pymerc.api.models.towns import TownMarket, TownMarketItemDetails
 from pymerc.game.exports import Export, Exports
 from pymerc.game.imports import Import, Imports
 from pymerc.game.town import Town
 
 if TYPE_CHECKING:
     from pymerc.client import Client
+    from pymerc.game.player import Player
 
 
 class Transport:
@@ -21,8 +22,9 @@ class Transport:
     imports: Imports
     town: Optional[Town]
 
-    def __init__(self, client: Client, id: int):
+    def __init__(self, client: Client, player: Player, id: int):
         self._client = client
+        self.player = player
         self.id = id
         self.exports = Exports()
         self.imports = Imports()
@@ -47,6 +49,14 @@ class Transport:
         return self.data.inventory
 
     @property
+    def market(self) -> Optional[TownMarket]:
+        """The market of the transport."""
+        if self.docked:
+            return self.town.market
+        else:
+            return None
+
+    @property
     def route(self) -> common.Inventory:
         """The route of the transport."""
         return self.data.route
@@ -62,6 +72,42 @@ class Transport:
         """
         return self.data.route.account.assets.get(item, None)
 
+    async def sell(self, item: common.Item, volume: int, price: float) -> bool:
+        """Place a sell order for an item in the transport's town.
+
+        Args:
+            item (Item): The item to sell.
+            volume (int): The volume to sell.
+            price (float): The price to sell at.
+
+        Returns:
+            bool: Whether the sell order was placed
+        """
+        if not self.docked:
+            raise ValueError("The transport must be docked to sell an item.")
+
+        expected_balance = self.player.storehouse.items[item].balance
+        return await self._client.towns_api.send_sell_order(
+            item, self.town.id, expected_balance, f"route/{self.id}", price, volume
+        )
+
+    async def set_manager(
+        self, item: common.Item, manager: common.InventoryManager
+    ) -> bool:
+        """Sets the manager for the item.
+
+        Args:
+            item (Item): The item to set the manager for.
+            manager (InventoryManager): The manager to set.
+
+        Returns:
+            bool: Whether the manager was set.
+        """
+        if not self.docked:
+            raise ValueError("The transport must be docked to set a manager.")
+
+        return await self._client.transports_api.set_manager(self.id, item, manager)
+
     async def _load_imports_exports(self):
         """Loads the imports and exports for the transport."""
         if self.docked:
@@ -76,6 +122,22 @@ class Transport:
 
 class TransportList(UserList[Transport]):
     """A list of transports."""
+
+    def by_town_name(self, name: str) -> TransportList:
+        """Filters the transports by the town name.
+
+        Args:
+            name (str): The name of the town.
+
+        Returns:
+            TransportList: The filtered transports.
+        """
+        transports = TransportList()
+        for transport in self:
+            if transport.docked:
+                if transport.town.name == name:
+                    transports.append(transport)
+        return transports
 
     def search_markets(self, item: common.Item) -> list[TownItem]:
         """Searches the markets for the item.

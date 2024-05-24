@@ -50,7 +50,7 @@ class Player:
         tasks = []
         if self.business.transport_ids:
             for id in self.business.transport_ids:
-                tasks.append(self._client.transport(id))
+                tasks.append(self._client.transport(self, id))
         self.transports = TransportList(await asyncio.gather(*tasks))
 
         for transport in self.transports:
