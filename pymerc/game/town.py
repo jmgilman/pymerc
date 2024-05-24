@@ -3,8 +3,8 @@ from __future__ import annotations
 import math
 from typing import TYPE_CHECKING, Optional
 
+from pymerc.api.models import common
 from pymerc.api.models import towns as models
-from pymerc.api.models.map import Region
 
 if TYPE_CHECKING:
     from pymerc.client import Client
@@ -19,13 +19,8 @@ class Town:
 
     async def load(self):
         """Loads the data for the town."""
-        self._data = await self._client.towns_api.get_data(self.id)
+        self.data = await self._client.towns_api.get_data(self.id)
         self._market = await self._client.towns_api.get_market_data(self.id)
-
-    @property
-    def data(self) -> models.TownData:
-        """The data for the town."""
-        return self._data
 
     @property
     def market(self) -> dict[str, models.TownMarketItem]:
@@ -33,10 +28,15 @@ class Town:
         return self._market.markets
 
     @property
+    def name(self) -> str:
+        """The name of the town."""
+        return self.data.name
+
+    @property
     def structures(self) -> dict[str, models.TownDomainStructure]:
         """The structures in the town."""
         structures = {}
-        for domain in self._data.domain.values():
+        for domain in self.data.domain.values():
             if domain.structure is not None:
                 structures[domain.structure.type] = domain.structure
 
@@ -46,7 +46,7 @@ class Town:
     def total_satisfaction(self) -> int:
         """The percent satisfaction of the town across all categories."""
         demands = sum(
-            [category.products for category in self._data.commoners.sustenance], []
+            [category.products for category in self.data.commoners.sustenance], []
         )
         desire_total = sum(demand.desire for demand in demands)
         result_total = sum(demand.result for demand in demands)
@@ -59,7 +59,7 @@ class Town:
         return len(
             [
                 domain
-                for domain in self._data.domain.values()
+                for domain in self.data.domain.values()
                 if domain.structure is not None
             ]
         )
@@ -67,34 +67,28 @@ class Town:
     @property
     def total_taxes(self) -> int:
         """The total taxes collected by the town."""
-        return sum(self._data.government.taxes_collected.__dict__.values())
+        return sum(self.data.government.taxes_collected.__dict__.values())
 
-    async def fetch_market_item(self, name: str) -> models.TownMarketItemDetails:
+    async def fetch_market_item(
+        self, item: common.Item
+    ) -> models.TownMarketItemDetails:
         """Fetches the details for a market item.
 
         Args:
-            name (str): The name of the item
+            item (Item): The item to fetch the details for
 
         Returns:
             TownMarketItemDetails: The details for the item
         """
-        return await self._client.towns.get_market_item(self.id, name)
+        return await self._client.towns_api.get_market_item(self.id, item)
 
-    async def fetch_region(self) -> Region:
-        """Fetches the region of the town.
-
-        Returns:
-            Region: The region of the town.
-        """
-        return await self._client.regions.get(self._data.region)
-
-    def item(self, name: str) -> Optional[models.TownMarketItem]:
+    def item(self, item: common.Item) -> Optional[models.TownMarketItem]:
         """Get an item from the market.
 
         Args:
-            name (str): The name of the item
+            item (Item): The item to get
 
         Returns:
             Optional[TownMarketItem]: The item, if found
         """
-        return self._market.markets.get(name)
+        return self._market.markets.get(item)

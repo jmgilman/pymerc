@@ -10,7 +10,7 @@ from pymerc.game.building import BuildingsList
 from pymerc.game.exports import ExportsList, ExportsSummed
 from pymerc.game.imports import ImportsList, ImportsSummed
 from pymerc.game.town import Town
-from pymerc.game.transport import Transport
+from pymerc.game.transport import Transport, TransportList
 
 if TYPE_CHECKING:
     from pymerc.client import Client
@@ -51,7 +51,7 @@ class Player:
         if self.business.transport_ids:
             for id in self.business.transport_ids:
                 tasks.append(self._client.transport(id))
-        self.transports = await asyncio.gather(*tasks)
+        self.transports = TransportList(await asyncio.gather(*tasks))
 
         for transport in self.transports:
             for item, exp in transport.exports.items():
