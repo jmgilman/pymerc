@@ -107,7 +107,7 @@ class TownCulture(BaseModel):
 class TownMarket(BaseModel):
     """Represents the market in a town."""
 
-    markets: dict[str, TownMarketItem]
+    markets: dict[common.Item, TownMarketItem]
     ts: int = Field(alias="_ts")
 
 

@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import TypeAdapter
 
 from pymerc.api.base import BaseAPI
-from pymerc.api.models import towns
+from pymerc.api.models import common, towns
 
 BASE_URL = "https://play.mercatorio.io/api/towns"
 
@@ -20,7 +20,7 @@ class TownsAPI(BaseAPI):
         response = await self.client.get(BASE_URL)
         return adapter.validate_python(response.json())
 
-    async def get_data(self, id) -> towns.TownData:
+    async def get_data(self, id: int) -> towns.TownData:
         """Get data for a town.
 
         Args:
@@ -32,7 +32,7 @@ class TownsAPI(BaseAPI):
         response = await self.client.get(f"{BASE_URL}/{id}")
         return towns.TownData.model_validate(response.json())
 
-    async def get_market_data(self, id) -> towns.TownMarket:
+    async def get_market_data(self, id: int) -> towns.TownMarket:
         """Get market data for a town.
 
         Args:
@@ -45,7 +45,7 @@ class TownsAPI(BaseAPI):
         return towns.TownMarket.model_validate(response.json())
 
     async def get_market_item(
-        self, town_id, item
+        self, town_id: int, item: common.Item
     ) -> Optional[towns.TownMarketItemDetails]:
         """Get the market overview for an item in a town.
 
@@ -56,5 +56,5 @@ class TownsAPI(BaseAPI):
         Returns:
             TownMarketItemDetails: The market overview for the town
         """
-        response = await self.client.get(f"{BASE_URL}/{town_id}/markets/{item}")
+        response = await self.client.get(f"{BASE_URL}/{town_id}/markets/{item.value}")
         return towns.TownMarketItemDetails.model_validate(response.json())
