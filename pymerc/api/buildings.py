@@ -31,7 +31,10 @@ class BuildingsAPI(BaseAPI):
             BuildingOperation: The building operation information.
         """
         response = await self.client.get(f"{BASE_URL}{id}/operations")
-        return buildings.BuildingOperation.model_validate(response.json())
+        if response.status_code == 404:
+            return buildings.BuildingOperation()
+        else:
+            return buildings.BuildingOperation.model_validate(response.json())
 
     async def set_manager(
         self, id: int, item: common.Item, manager: common.InventoryManager

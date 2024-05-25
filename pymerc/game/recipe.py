@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from pymerc.api.models.common import InventoryAccountAsset, InventoryManager, Item
+from pymerc.api.models import common
+from pymerc.api.models.static import Ingredient
 from pymerc.api.models.static import Recipe as RecipeModel
 
 if TYPE_CHECKING:
@@ -10,33 +11,43 @@ if TYPE_CHECKING:
 
 
 class Recipe:
-    def __init__(self, client: Client, recipe_name: str):
+    """A higher level representation of a recipe in the game."""
+
+    data: RecipeModel
+
+    def __init__(self, client: Client, recipe: RecipeModel):
         self._client = client
-        self.recipe_name = recipe_name
-        self.data: Optional[RecipeModel] = None
+        self.data = recipe
 
     async def load(self):
-        """Loads the data for the recipe and calculates labor required."""
-        recipes = await self._client.static_api.get_recipes()
-        for recipe in recipes:
-            if recipe.name.value == self.recipe_name:
-                self.data = recipe
-        if self.data is None:
-            raise ValueError(f"Recipe {self.recipe_name} not found")
+        """Loads the data for the recipe"""
+        pass
+
+    @property
+    def inputs(self) -> dict[common.Item, Ingredient]:
+        """The inputs of the recipe."""
+        return {ingredient.product: ingredient for ingredient in self.data.inputs}
+
+    @property
+    def outputs(self) -> dict[common.Item, Ingredient]:
+        """The outputs of the recipe."""
+        return {ingredient.product: ingredient for ingredient in self.data.outputs}
 
     @property
     def labour(self) -> float:
         """Calculates the labor required for the recipe."""
         for input_ingredient in self.data.inputs:
-            if input_ingredient.product == Item.Labour:
+            if input_ingredient.product == common.Item.Labour:
                 return input_ingredient.amount
         return 0.0
 
     def calculate_target_labor(
         self,
         target: float,
-        inventory_assets: Optional[dict[Item, InventoryAccountAsset]] = {},
-        inventory_managers: Optional[dict[Item, InventoryManager]] = {},
+        inventory_assets: Optional[
+            dict[common.Item, common.InventoryAccountAsset]
+        ] = {},
+        inventory_managers: Optional[dict[common.Item, common.InventoryManager]] = {},
     ) -> float:
         """Calculates the labor required for the given target multiplier.
 

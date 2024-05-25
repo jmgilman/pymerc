@@ -6,29 +6,42 @@ from typing import TYPE_CHECKING, Optional
 from pymerc.api.models import common
 from pymerc.api.models.buildings import Building as BuildingModel
 from pymerc.game.recipe import Recipe
+from pymerc.game.operation import BuildingOperation, Operation, OperationsList
 
 if TYPE_CHECKING:
     from pymerc.client import Client
+    from pymerc.game.player import Player
 
 
 class Building:
     """A higher level representation of a building in the game."""
 
     data: BuildingModel
+    player: Player
 
-    def __init__(self, client: Client, id: int):
+    def __init__(self, client: Client, player: Player, id: int):
         self._client = client
+        self.player = player
         self.id = id
 
     async def load(self):
         """Loads the data for the building."""
         self.data = await self._client.buildings_api.get(self.id)
-        self.operations_data = await self._client.buildings_api.get_operations(self.id)
+
+    @property
+    def building_operation(self) -> Optional[BuildingOperation]:
+        """Returns the building operation."""
+        return self.player.operations.get(self.id, None)
 
     @property
     def flows(self) -> Optional[dict[common.Item, common.InventoryFlow]]:
-        """The flows of the building."""
-        return self.operations_data.total_flow
+        """Returns the flows of the building."""
+        if self.building_operation.total_flow:
+            return self.building_operation.data.total_flow
+        elif self.operation:
+            return self.operation.data.flows
+        else:
+            return None
 
     @property
     def inventory(self) -> Optional[common.Inventory]:
@@ -46,14 +59,27 @@ class Building:
             return None
 
     @property
+    def operation(self) -> Optional[Operation]:
+        """Returns the operation of the building."""
+        if len(self.operations) == 1:
+            return self.operations[0]
+        else:
+            return None
+
+    @property
+    def operations(self) -> Optional[OperationsList]:
+        """Returns the operations of the building."""
+        if self.id in self.player.operations:
+            if not self.player.operations[self.id].operations:
+                return self.player.storehouse.operations.by_building_id(self.id)
+
+            return self.player.operations[self.id].operations
+        return None
+
+    @property
     def managers(self) -> dict[common.Item, common.InventoryManager]:
         """The managers of the building."""
         return self.data.storage.inventory.managers
-
-    @property
-    def operations(self) -> Optional[list[common.Operation]]:
-        """The operations of the building."""
-        return self.operations_data.operations
 
     @property
     def previous_flows(self) -> Optional[dict[common.Item, common.InventoryFlow]]:
@@ -209,6 +235,21 @@ class Building:
 
 class BuildingsList(UserList):
     """A list of buildings."""
+
+    def by_id(self, id: int) -> Optional[Building]:
+        """Get a building by its ID.
+
+        Args:
+            id (int): The ID of the building.
+
+        Returns:
+            Building: The building with the given ID if it exists, otherwise None.
+        """
+        for building in self:
+            if building.id == id:
+                return building
+
+        return None
 
     def by_type(self, type: common.BuildingType) -> BuildingsList:
         """Get all buildings of a certain type.

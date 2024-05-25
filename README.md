@@ -114,6 +114,41 @@ Bump our export volume and then buy some more cloth off the Aderhampton market:
 1476.096
 ```
 
+#### Operations
+
+Get the operations for all of our weaveries:
+
+```python
+>>> from pymerc.api.models.common import BuildingType
+>>> player.operations.by_building_type(BuildingType.Weavery)
+OperationsList([<pymerc.game.operation.Operation at 0x7ffbb00de6f0>])
+```
+
+We have a single operation going on associated with a weavery.
+Check how much it is currently outputting:
+
+```python
+>>> player.operations.by_building_type(BuildingType.Weavery).outputs
+{<Item.Cloth: 'cloth'>: 400.0}
+```
+
+Check all of our operations that are taking cloth as an input:
+
+```python
+>>> player.operations.by_item_input(Item.Cloth)
+OperationsList([<pymerc.game.operation.Operation at 0x7ffbb00debd0>,
+                <pymerc.game.operation.Operation at 0x7ffbb00dede0>,
+                <pymerc.game.operation.Operation at 0x7ffbb00dee70>,
+                <pymerc.game.operation.Operation at 0x7ffbb00dcf80>])
+```
+
+Check how much cloth all of these operations are consuming in total:
+
+```python
+>>> player.operations.by_item_input(Item.Cloth).inputs[Item.Cloth]
+197.0
+```
+
 #### Data Analysis
 
 Compare our total and actual imports:

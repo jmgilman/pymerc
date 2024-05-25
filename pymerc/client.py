@@ -11,9 +11,12 @@ from pymerc.api.player import PlayerAPI
 from pymerc.api.static import StaticAPI
 from pymerc.api.towns import TownsAPI
 from pymerc.api.transports import TransportsAPI
+from pymerc.api.models import common
 from pymerc.exceptions import TurnInProgressException
 from pymerc.game.building import Building
+from pymerc.game.operation import BuildingOperation, Operation
 from pymerc.game.player import Player
+from pymerc.game.recipe import Recipe
 from pymerc.game.storehouse import Storehouse
 from pymerc.game.town import Town
 from pymerc.game.transport import Transport
@@ -104,19 +107,58 @@ class Client:
         """
         return await self.session.put(url, json=json, **kwargs)
 
-    async def building(self, id: int) -> Building:
+    async def building(self, player: Player, id: int) -> Building:
         """Get a building by its ID.
 
         Args:
+            player (Player): The player.
             id (int): The ID of the building.
 
         Returns:
             Building: The building with the given ID.
         """
-        b = Building(self, id)
+        b = Building(self, player, id)
         await b.load()
 
         return b
+
+    async def building_operation(
+        self, player: Player, building_id: int
+    ) -> BuildingOperation:
+        """Get the operations for a building.
+
+        Args:
+            player (Player): The player.
+            building_id (int): The ID of the building.
+
+        Returns:
+            BuildingOperations: The building operation information.
+        """
+        o = BuildingOperation(self, player, building_id)
+        await o.load()
+
+        return o
+
+    async def operation(
+        self,
+        player: Player,
+        building_operation: BuildingOperation,
+        operation: common.Operation,
+    ) -> Operation:
+        """Create a new operation from a common.Operation object.
+
+        Args:
+            player (Player): The player.
+            building_operation (BuildingOperation): The building operation the operation is associated with.
+            operation (common.Operation): The operation.
+
+        Returns:
+            Operation: The operation.
+        """
+        o = Operation(self, player, building_operation, operation)
+        await o.load()
+
+        return o
 
     async def player(self) -> Player:
         """Get the current player.
@@ -128,6 +170,17 @@ class Client:
         await p.load()
 
         return p
+
+    async def recipe(self, recipe: common.Recipe) -> Recipe:
+        """Create a new recipe from a common.Recipe object.
+
+        Returns:
+            Recipe: The recipe.
+        """
+        r = Recipe(self, recipe)
+        await r.load()
+
+        return r
 
     async def storehouse(self, player: Player) -> Storehouse:
         """Get the player's storehouse.

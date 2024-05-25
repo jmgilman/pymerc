@@ -58,6 +58,11 @@ class TownCommoners(BaseModel):
     migration: float
     sustenance: list[TownDemandCategory]
 
+    @property
+    def demands(self) -> list[TownDemand]:
+        """The demands of the commoners."""
+        return [demand for category in self.sustenance for demand in category.products]
+
 
 class TownDemandCategory(BaseModel):
     """Represents a category of demands in a town."""
