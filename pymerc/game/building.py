@@ -10,6 +10,12 @@ from pymerc.game.recipe import Recipe
 if TYPE_CHECKING:
     from pymerc.client import Client
 
+# TODO: Make it so you can set production level
+# https://play.mercatorio.io/api/buildings/200500278001002/producer
+#{target: "0.9", autoset_buying: true, autoset_selling: true}
+# autoset_buying: true
+# autoset_selling: true
+# target: "0.9"
 
 class Building:
     """A higher level representation of a building in the game."""
