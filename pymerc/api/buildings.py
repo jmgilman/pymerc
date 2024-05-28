@@ -61,3 +61,22 @@ class BuildingsAPI(BaseAPI):
         raise SetManagerFailedException(
             f"Failed to set manager for {item.name} on building {id}: {response.text}"
         )
+
+    async def set_production_target_multiplier(
+        self, id: int, target: float
+    ) -> bool:
+        """Set the production target multiplier for a building.
+
+        Args:
+            id (int): The ID of the building.
+            target (float): The target multiplier.
+        """
+        payload = {"target": target, "autoset_buying": True, "autoset_selling": True}
+        json = data.convert_floats_to_strings(payload)
+        response = await self.client.patch(
+            f"{BASE_URL}{id}/producer", json=json
+        )
+
+        if response.status_code == 200:
+            return True
+        return False
