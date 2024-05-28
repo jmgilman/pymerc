@@ -8,6 +8,7 @@ from pymerc.api.models.towns import TownMarketItem, TownMarketItemDetails
 from pymerc.game.building import Building
 from pymerc.game.exports import ExportsList
 from pymerc.game.imports import ImportsList
+from pymerc.game.operation import OperationsList
 
 if TYPE_CHECKING:
     from pymerc.client import Client
@@ -42,7 +43,12 @@ class Storehouse:
         return self.data.flows
 
     @property
-    def operations(self) -> Optional[list[common.Operation]]:
+    def id(self) -> int:
+        """The id of the storehouse."""
+        return self.data.id
+
+    @property
+    def operations(self) -> OperationsList:
         """The operations of the storehouse."""
         return self.data.operations
 

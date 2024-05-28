@@ -23,6 +23,16 @@ class Town:
         self._market = await self._client.towns_api.get_market_data(self.id)
 
     @property
+    def commoners(self) -> models.TownCommoners:
+        """The commoners in the town."""
+        return self.data.commoners
+
+    @property
+    def demands(self) -> list[models.TownDemand]:
+        """The demands of commoners in the town."""
+        return self.data.commoners.demands
+
+    @property
     def market(self) -> dict[str, models.TownMarketItem]:
         """The market data for the town."""
         return self._market.markets

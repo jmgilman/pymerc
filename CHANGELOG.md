@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+# [0.5.0] - 2024-05-24
+
+### Added
+
+- Higher level objects for storehouse and transports
+- Higher level objects for dealing with imports/exports
+- Support for getting current operations of a building
+- Several properties for performing routine calculations on items
+- Support for buying, selling, and managing items across buildings/transports
+
+### Changed
+
+- README updated with example usage code
+
 # [0.4.0] - 2024-05-20
 
 ### Added
@@ -49,7 +63,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release
 
-[unreleased]: https://github.com/jmgilman/pymerc/compare/v0.4.0...HEAD
+[unreleased]: https://github.com/jmgilman/pymerc/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/jmgilman/pymerc/compare/v0.5.0
 [0.4.0]: https://github.com/jmgilman/pymerc/compare/v0.4.0
 [0.3.0]: https://github.com/jmgilman/pymerc/releases/tag/v0.3.0
 [0.2.0]: https://github.com/jmgilman/pymerc/releases/tag/v0.2.0

@@ -54,7 +54,7 @@ class Export:
     @property
     def volume_flowed(self) -> int:
         """The volume of the export that flowed in the last turn."""
-        return self.flow.exported or 0
+        return self.flow.export or 0
 
     async def fetch_market_details(self) -> TownMarketItemDetails:
         """Fetches the market details for the export."""

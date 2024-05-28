@@ -9,6 +9,11 @@ from pymerc.api.models.player import Player as PlayerModel
 from pymerc.game.building import BuildingsList
 from pymerc.game.exports import ExportsList, ExportsSummed
 from pymerc.game.imports import ImportsList, ImportsSummed
+from pymerc.game.operation import (
+    BuildingOperation,
+    BuildingOperationsDict,
+    BuildingOperationList,
+)
 from pymerc.game.town import Town
 from pymerc.game.transport import Transport, TransportList
 
@@ -24,6 +29,7 @@ class Player:
     data: PlayerModel
     exports: ExportsSummed
     imports: ImportsSummed
+    operations: BuildingOperationsDict
     town: Town
     transports: list[Transport]
 
@@ -34,8 +40,6 @@ class Player:
 
     async def load(self):
         """Loads the data for the player."""
-        tasks = []
-
         self.data = await self._client.player_api.get()
         self.business = await self._client.businesses_api.get(
             self.data.household.business_ids[0]
@@ -43,8 +47,20 @@ class Player:
         self.town = await self._client.town(self.data.household.town_id)
 
         tasks = []
+        for operation in self.data.household.operations:
+            id = int(operation.split("/")[1])
+            tasks.append(self._client.building_operation(self, id))
+
+        self.operations = BuildingOperationsDict(
+            {
+                op.building_id: op
+                for op in BuildingOperationList(await asyncio.gather(*tasks))
+            }
+        )
+
+        tasks = []
         for id in self.business.building_ids:
-            tasks.append(self._client.building(id))
+            tasks.append(self._client.building(self, id))
         self.buildings = BuildingsList(await asyncio.gather(*tasks))
 
         tasks = []
