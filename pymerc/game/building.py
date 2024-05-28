@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from pymerc.client import Client
     from pymerc.game.player import Player
 
+
 class Building:
     """A higher level representation of a building in the game."""
 

@@ -41,16 +41,6 @@ class Recipe:
                 return input_ingredient.amount
         return 0.0
 
-    @property
-    def outputs(self) -> list[Ingredient]:
-        """The flows of the storehouse."""
-        return self.data.outputs
-
-    @property
-    def inputs(self) -> list[Ingredient]:
-        """The flows of the storehouse."""
-        return self.data.inputs
-
     def calculate_target_labor(
         self,
         target: float,
@@ -63,8 +53,8 @@ class Recipe:
 
         Args:
             target (float): The target percentage multiplier for the recipe.
-            inventory_assets (Optional[List[common.InventoryAccountAsset]]): The list of inventory assets.
-            inventory_managers (Optional[List[common.InventoryManager]]): The list of inventory managers.
+            inventory_assets (Optional[List[InventoryAccountAsset]]): The list of inventory assets.
+            inventory_managers (Optional[List[InventoryManager]]): The list of inventory managers.
 
         Returns:
             float: The labor required for the target multiplier.
