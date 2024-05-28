@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from pymerc.api.models.common import InventoryAccountAsset, InventoryManager, Item
-from pymerc.api.models.static import Recipe as RecipeModel, Ingredient
+from pymerc.api.models import common
+from pymerc.api.models.static import Ingredient
+from pymerc.api.models.static import Recipe as RecipeModel
 
 if TYPE_CHECKING:
     from pymerc.client import Client
@@ -23,12 +24,12 @@ class Recipe:
         pass
 
     @property
-    def inputs(self) -> dict[Item, Ingredient]:
+    def inputs(self) -> dict[common.Item, Ingredient]:
         """The inputs of the recipe."""
         return {ingredient.product: ingredient for ingredient in self.data.inputs}
 
     @property
-    def outputs(self) -> dict[Item, Ingredient]:
+    def outputs(self) -> dict[common.Item, Ingredient]:
         """The outputs of the recipe."""
         return {ingredient.product: ingredient for ingredient in self.data.outputs}
 
@@ -36,7 +37,7 @@ class Recipe:
     def labour(self) -> float:
         """Calculates the labor required for the recipe."""
         for input_ingredient in self.data.inputs:
-            if input_ingredient.product == Item.Labour:
+            if input_ingredient.product == common.Item.Labour:
                 return input_ingredient.amount
         return 0.0
 
@@ -54,16 +55,16 @@ class Recipe:
         self,
         target: float,
         inventory_assets: Optional[
-            dict[Item, InventoryAccountAsset]
+            dict[common.Item, common.InventoryAccountAsset]
         ] = {},
-        inventory_managers: Optional[dict[Item, InventoryManager]] = {},
+        inventory_managers: Optional[dict[common.Item, common.InventoryManager]] = {},
     ) -> float:
         """Calculates the labor required for the given target multiplier.
 
         Args:
             target (float): The target percentage multiplier for the recipe.
-            inventory_assets (Optional[List[InventoryAccountAsset]]): The list of inventory assets.
-            inventory_managers (Optional[List[InventoryManager]]): The list of inventory managers.
+            inventory_assets (Optional[List[common.InventoryAccountAsset]]): The list of inventory assets.
+            inventory_managers (Optional[List[common.InventoryManager]]): The list of inventory managers.
 
         Returns:
             float: The labor required for the target multiplier.
