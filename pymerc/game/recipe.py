@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
 from pymerc.api.models.common import InventoryAccountAsset, InventoryManager, Item
-from pymerc.api.models.static import Recipe as RecipeModel
+from pymerc.api.models.static import Recipe as RecipeModel, Ingredient
 
 if TYPE_CHECKING:
     from pymerc.client import Client
@@ -23,12 +23,12 @@ class Recipe:
         pass
 
     @property
-    def inputs(self) -> dict[common.Item, Ingredient]:
+    def inputs(self) -> dict[Item, Ingredient]:
         """The inputs of the recipe."""
         return {ingredient.product: ingredient for ingredient in self.data.inputs}
 
     @property
-    def outputs(self) -> dict[common.Item, Ingredient]:
+    def outputs(self) -> dict[Item, Ingredient]:
         """The outputs of the recipe."""
         return {ingredient.product: ingredient for ingredient in self.data.outputs}
 
@@ -36,7 +36,7 @@ class Recipe:
     def labour(self) -> float:
         """Calculates the labor required for the recipe."""
         for input_ingredient in self.data.inputs:
-            if input_ingredient.product == common.Item.Labour:
+            if input_ingredient.product == Item.Labour:
                 return input_ingredient.amount
         return 0.0
 
@@ -54,9 +54,9 @@ class Recipe:
         self,
         target: float,
         inventory_assets: Optional[
-            dict[common.Item, common.InventoryAccountAsset]
+            dict[Item, InventoryAccountAsset]
         ] = {},
-        inventory_managers: Optional[dict[common.Item, common.InventoryManager]] = {},
+        inventory_managers: Optional[dict[Item, InventoryManager]] = {},
     ) -> float:
         """Calculates the labor required for the given target multiplier.
 

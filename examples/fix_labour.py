@@ -25,6 +25,9 @@ async def main():
 
     consumed = flow.consumption - flow.production
 
+    if flow.resident:
+        consumed = consumed - flow.resident
+
     print(f"Currently consuming {consumed} labour")
     print(f"Currently buying {manager.buy_volume} labour")
 
