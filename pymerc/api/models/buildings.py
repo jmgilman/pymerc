@@ -34,7 +34,7 @@ class BuildingConstruction(BaseModel):
     progress: int
     reference: str
     stage: str
-    time: int
+    time: Optional[int] = None
     upgrade_type: Optional[common.BuildingUpgradeType] = None
 
 
