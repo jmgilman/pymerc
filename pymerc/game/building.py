@@ -204,6 +204,16 @@ class Building:
         """
         self = await self._client.buildings_api.set_manager(self.id, item, manager)
 
+    async def set_target_production(self, target: float, autoset_buying: bool = True, autoset_selling: bool = True):
+        """Set the production target multiplier for a building.
+
+        Args:
+            target (float): The target multiplier.
+            autoset_buying (bool, optional): Whether to autoset the buying or selling. Defaults to True.
+            autoset_selling (bool, optional): Whether to autoset the selling or buying. Defaults to True.
+        """
+        self = await self._client.buildings_api.set_production_target_multiplier(self.id, target, autset_buying, autoset_selling)
+
     async def calculate_current_labor_need(self) -> float:
         """Calculates the current labor need based on the building's production recipe.
         Returns:

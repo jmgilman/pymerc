@@ -567,6 +567,8 @@ class Recipe(Enum):
     TrapFish1 = "trap fish 1"
     TrapFish2 = "trap fish 2"
     TrapFish3 = "trap fish 3"
+    Trapping1 = "trapping 1"
+    Trapping2 = "trapping 2"
     TumbrelOperations = "tumbrel operations"
     WeaveCloth1 = "weave cloth 1"
     WeaveCloth2a = "weave cloth 2a"
@@ -579,6 +581,8 @@ class Recipe(Enum):
     YokeOx1b = "yoke ox 1b"
     YokeOx2a = "yoke ox 2a"
     YokeOx2b = "yoke ox 2b"
+    YokeOx3 = "yoke ox 3"
+    YokeOx3manure = "yoke ox 3 (manure)"
 
 
 class Skill(Enum):
