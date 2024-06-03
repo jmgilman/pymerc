@@ -108,6 +108,6 @@ class Item(BaseModel):
 class ItemPrice(BaseModel):
     """Represents the price of an item in the game."""
 
-    low: float
+    low: Optional[float] = None
     typical: float
-    high: float
+    high: Optional[float] = None

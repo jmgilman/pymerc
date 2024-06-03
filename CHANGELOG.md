@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+# [0.6.0] - 2024-06-02
+
+### Added
+
+- Higher level objects for building operations and recipes
+
+### Changed
+
+- Operations are now loaded and handled separately
+- Models have been updated for the latest game release
+
 # [0.5.0] - 2024-05-24
 
 ### Added
@@ -63,7 +74,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release
 
-[unreleased]: https://github.com/jmgilman/pymerc/compare/v0.5.0...HEAD
+[unreleased]: https://github.com/jmgilman/pymerc/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/jmgilman/pymerc/compare/v0.6.0
 [0.5.0]: https://github.com/jmgilman/pymerc/compare/v0.5.0
 [0.4.0]: https://github.com/jmgilman/pymerc/compare/v0.4.0
 [0.3.0]: https://github.com/jmgilman/pymerc/releases/tag/v0.3.0
