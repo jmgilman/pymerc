@@ -3,7 +3,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class Asset(Enum):
@@ -821,8 +821,7 @@ class ItemTradeResult(BaseModel):
     order_id: Optional[int] = None
     embedded: Optional[dict] = Field(alias="_embedded", default_factory=dict)
 
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class ItemTradeSettlement(BaseModel):
