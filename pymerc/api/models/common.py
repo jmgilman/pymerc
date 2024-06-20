@@ -11,6 +11,7 @@ class Asset(Enum):
 
     Cog = "cog"
     Handcart = "handcart"
+    Hulk = "hulk"
     Money = "money"
     Snekkja = "snekkja"
     Tumbrel = "tumbrel"
@@ -422,6 +423,7 @@ class Recipe(Enum):
     HoldSermon2b = "hold sermon 2b"
     HoldSermon3a = "hold sermon 3a"
     HoldSermon3b = "hold sermon 3b"
+    HulkOperations = "hulk operations"
     Hunting1 = "hunting 1"
     Hunting2 = "hunting 2"
     Hunting3 = "hunting 3"
