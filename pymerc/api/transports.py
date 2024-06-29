@@ -33,7 +33,7 @@ class TransportsAPI(BaseAPI):
         """
         json = data.convert_floats_to_strings(manager.model_dump(exclude_unset=True))
         response = await self.client.patch(
-            f"{BASE_URL}/{id}/route/inventory/{item.value}", json=json
+            f"{BASE_URL}/{id}/route/simpleinventory/{item.value}", json=json
         )
         if response.status_code == 200:
             return transports.TransportRoute.model_validate(response.json())
