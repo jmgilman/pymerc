@@ -48,16 +48,6 @@ class StaticAPI(BaseAPI):
         """
         data = await self._get()
 
-        from pymerc.api.models.common import Recipe as RecipeEnum
-
-        # Convert Enum values to a set for faster look-up
-        recipe_values = {recipe.value for recipe in RecipeEnum}
-
-        # Iterate over objects and check if the name exists in the Enum values
-        for obj in data["F_"]:
-            if obj['name'] not in recipe_values:
-                print(f"{obj['name']} does not exist in Recipe Enum")
-
         type_adapter = TypeAdapter(list[static.Recipe])
         return type_adapter.validate_python(data["F_"])
 
