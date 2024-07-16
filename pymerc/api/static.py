@@ -47,6 +47,7 @@ class StaticAPI(BaseAPI):
             list[static.Recipe]: The recipes from the game.
         """
         data = await self._get()
+
         type_adapter = TypeAdapter(list[static.Recipe])
         return type_adapter.validate_python(data["F_"])
 
