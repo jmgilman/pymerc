@@ -134,7 +134,7 @@ class TownMarketItem(BaseModel):
 class TownMarketItemDetails(BaseModel):
     """Represents the market data for a single item in a town."""
 
-    id: int
+    id: str
     product: common.Item
     asset: common.Item
     currency: str
