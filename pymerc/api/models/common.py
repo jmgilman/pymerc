@@ -760,7 +760,7 @@ class Inventory(BaseModel):
     """Represents an inventory."""
 
     account: InventoryAccount
-    capacity: int
+    capacity: float
     managers: Optional[dict[Item, InventoryManager]] = None
     previous_flows: Optional[dict[Item, InventoryFlow]] = {}
     reserved: Optional[int] = None
@@ -826,7 +826,7 @@ class InventoryManager(BaseModel):
 
     buy_price: Optional[float] = None
     buy_volume: Optional[int] = None
-    capacity: Optional[int] = None
+    capacity: Optional[float] = None
     max_holding: Optional[int] = None
     sell_price: Optional[float] = None
     sell_volume: Optional[int] = None

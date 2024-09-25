@@ -10,7 +10,7 @@ from pymerc.api.models import common
 class Building(BaseModel):
     """Represents a building."""
 
-    capacity: Optional[int] = None
+    capacity: Optional[float] = None
     construction: Optional[BuildingConstruction] = None
     delivery_cost: common.DeliveryCost
     id: int
