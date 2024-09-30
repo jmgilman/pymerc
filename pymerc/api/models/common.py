@@ -334,6 +334,11 @@ class Recipe(Enum):
     CastSculptures2 = "cast sculptures 2"
     ChurnButter1 = "churn butter 1"
     ChurnButter2 = "churn butter 2"
+    SnekkjaOperations = "snekkja operations"
+    CogOperations = "cog operations"
+    HulkOperations = "hulk operations"
+    HandcartOperations = "handcart operations"
+    TumbrelOperations = "tumbrel operations"
     CraftArms1 = "craft arms 1"
     CraftBelts1 = "craft belts 1"
     CraftBelts2 = "craft belts 2"
@@ -760,7 +765,7 @@ class Inventory(BaseModel):
     """Represents an inventory."""
 
     account: InventoryAccount
-    capacity: int
+    capacity: float
     managers: Optional[dict[Item, InventoryManager]] = None
     previous_flows: Optional[dict[Item, InventoryFlow]] = {}
     reserved: Optional[int] = None
@@ -826,7 +831,7 @@ class InventoryManager(BaseModel):
 
     buy_price: Optional[float] = None
     buy_volume: Optional[int] = None
-    capacity: Optional[int] = None
+    capacity: Optional[float] = None
     max_holding: Optional[int] = None
     sell_price: Optional[float] = None
     sell_volume: Optional[int] = None

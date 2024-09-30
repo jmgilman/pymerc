@@ -84,7 +84,7 @@ class Transport(BaseModel):
     type: common.Transport
     category: int
     tier: int
-    capacity: int
+    capacity: float
     speed: int
     journey_duration: int
     effective_days: int
